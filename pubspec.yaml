@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_stripe: ^9.5.0
   
   # UI & Icons
   cupertino_icons: ^1.0.6
@@ -41,7 +42,7 @@ dependencies:
   
   # Communication
   twilio_flutter: ^0.0.9
-  
+  flutter_paystack: ^1.0.7
   # Permission handling (you'll likely need this)
   permission_handler: ^11.1.0
   intl: ^0.17.0

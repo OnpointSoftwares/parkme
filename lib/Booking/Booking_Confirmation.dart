@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
+
 
 class BookingConfirmation extends StatefulWidget {
   final Map<String, dynamic> spot;
@@ -30,7 +36,6 @@ class _BookingConfirmationState extends State<BookingConfirmation> {
   Razorpay? _razorpay;
   TwilioFlutter? twilioFlutter;
   final TextEditingController _phoneController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -39,23 +44,12 @@ class _BookingConfirmationState extends State<BookingConfirmation> {
     _checkOutTime = TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute);
     _date = DateTime.now();
     formatter = DateFormat('yyyy-MM-dd');
-    MpesaFlutterPlugin.setConsumerKey("vahwanLGhxm1NIk7AXMM6oXt4cNbq1B3");
-    MpesaFlutterPlugin.setConsumerSecret("JmPtlVDNciBLLXCM");
-
-    // Initialize Razorpay
-    _razorpay = Razorpay();
-    _razorpay?.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay?.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay?.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    
-    // Initialize Twilio
     twilioFlutter = TwilioFlutter(
       accountSid: '*********************',
       authToken: '****************************',
       twilioNumber: '****************'
     );
   }
-
   @override
   void dispose() {
     _razorpay?.clear();
@@ -613,75 +607,67 @@ class _BookingConfirmationState extends State<BookingConfirmation> {
     return (durationInHours * costPerHour).round();
   }
 
-  void openCheckout() async {
-    int checkOutAmount = _calculateTotalCost();
-    String phone = _phoneController.text.trim();
-    
-    if (phone.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your M-Pesa phone number.')),
-      );
-      return;
-    }
+void openCheckout() async {
+  int checkOutAmount = _calculateTotalCost();
+  String phone = _phoneController.text.trim();
 
-    // Format phone number
+  if (phone.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please enter your phone number.')),
+    );
+    return;
+  }
+
+  // Format phone number for Kenya (M-Pesa expects 2547XXXXXXXX)
+  phone = phone.replaceAll(RegExp(r'\D'), ''); // Remove non-digits
+  if (phone.startsWith('0')) {
+    phone = '254' + phone.substring(1);
+  } else if (phone.startsWith('7') && phone.length == 9) {
+    phone = '254' + phone;
+  } else if (phone.startsWith('254') && phone.length == 12) {
+    // already correct
+  } else if (phone.startsWith('+254')) {
+    phone = phone.substring(1);
+  } else {
+    // fallback: try to force to 2547xxxxxxx
     if (!phone.startsWith('254')) {
-      if (phone.startsWith('0')) {
-        phone = '254${phone.substring(1)}';
-      } else {
-        phone = '254$phone';
+      phone = '254' + phone;
+    }
+  }
+
+  try {
+    final url = Uri.parse('https://eminently-rare-pegasus.ngrok-free.app/api/mpesa/stkpush'); // Update with your backend address
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'phone': phone, 'amount': checkOutAmount}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      Fluttertoast.showToast(
+        msg: "M-Pesa payment prompt sent. Complete payment on your phone.",
+        timeInSecForIosWeb: 4,
+      );
+      if(data['CheckoutRequestID'] != null){
+        addReservationToFirebase(true, data['CheckoutRequestID']);
       }
-    }
-
-    try {
-      dynamic transactionInitialisation = await MpesaFlutterPlugin.initializeMpesaSTKPush(
-        businessShortCode: "174379",
-        transactionType: TransactionType.CustomerPayBillOnline,
-        amount: checkOutAmount.toDouble(),
-        partyA: phone,
-        partyB: "174379",
-        callBackURL: Uri.parse("https://mydomain.com/callback"),
-        accountReference: "ParkMe",
-        phoneNumber: phone,
-        baseUri: Uri.parse("https://sandbox.safaricom.co.ke"),
-        transactionDesc: "Payment of Parking Spot",
-        passKey: 'vahwanLGhxm1NIk7AXMM6oXt4cNbq1B3',
-      );
-      
-      print("M-Pesa transaction: $transactionInitialisation");
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Payment initiated. Please check your phone.')),
-      );
-    } catch (e) {
-      print("M-Pesa error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('M-Pesa payment failed: ${e.toString()}')),
+      else{
+        addReservationToFirebase(false, null);
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: "Payment initiation failed: ${response.body}",
+        timeInSecForIosWeb: 4,
       );
     }
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  } catch (e) {
     Fluttertoast.showToast(
-      msg: "Payment successful!",
-      timeInSecForIosWeb: 4,
-    );
-    addReservationToFirebase(true, response.paymentId);
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(
-      msg: "Payment failed: ${response.message}",
+      msg: "Payment failed: ${e.toString()}",
       timeInSecForIosWeb: 4,
     );
   }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    Fluttertoast.showToast(
-      msg: "External wallet: ${response.walletName}",
-      timeInSecForIosWeb: 4,
-    );
-  }
+}
 
   void addReservationToFirebase(bool paymentDone, String? transactionID) async {
     if (!mounted) return;
