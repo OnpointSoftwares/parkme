@@ -385,12 +385,12 @@ class _BookingSuccessfulState extends State<BookingSuccessful> with TickerProvid
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kprimaryColor,
                       foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Back to Home',
                       style: TextStyle(
                         fontSize: 16,
@@ -400,7 +400,7 @@ class _BookingSuccessfulState extends State<BookingSuccessful> with TickerProvid
                   ),
                 ),
                 
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),

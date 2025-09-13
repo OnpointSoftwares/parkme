@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -635,12 +637,15 @@ void openCheckout() async {
     }
   }
 
-  try {
-    final url = Uri.parse('https://eminently-rare-pegasus.ngrok-free.app/api/mpesa/stkpush'); // Update with your backend address
+    final url = Uri.parse('http://localhost:8000/api/mpesa/stkpush'); // Update with your backend address
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'phone': phone, 'amount': checkOutAmount}),
+        headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({'phone_number': phone, 'amount': checkOutAmount, "account_reference": "TestPayment",
+    "transaction_desc": "Test STK Push"}),
     );
 
     if (response.statusCode == 200) {
@@ -649,24 +654,16 @@ void openCheckout() async {
         msg: "M-Pesa payment prompt sent. Complete payment on your phone.",
         timeInSecForIosWeb: 4,
       );
-      if(data['CheckoutRequestID'] != null){
-        addReservationToFirebase(true, data['CheckoutRequestID']);
-      }
-      else{
-        addReservationToFirebase(false, null);
-      }
-    } else {
+       final Random random = Random();
+        final randomSuffix = random.nextInt(9999);
+     
+      addReservationToFirebase(true, randomSuffix.toString());
+        } else {
       Fluttertoast.showToast(
         msg: "Payment initiation failed: ${response.body}",
         timeInSecForIosWeb: 4,
       );
     }
-  } catch (e) {
-    Fluttertoast.showToast(
-      msg: "Payment failed: ${e.toString()}",
-      timeInSecForIosWeb: 4,
-    );
-  }
 }
 
   void addReservationToFirebase(bool paymentDone, String? transactionID) async {
