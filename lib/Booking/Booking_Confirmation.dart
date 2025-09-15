@@ -637,7 +637,7 @@ void openCheckout() async {
     }
   }
 
-    final url = Uri.parse('http://localhost:8000/api/mpesa/stkpush'); // Update with your backend address
+    final url = Uri.parse('https://paymentendpoint.pythonanywhere.com/api/mpesa/stkpush'); // Update with your backend address
     final response = await http.post(
       url,
         headers: {
