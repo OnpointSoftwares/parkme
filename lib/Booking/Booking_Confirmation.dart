@@ -627,17 +627,15 @@ void openCheckout() async {
   } else if (phone.startsWith('7') && phone.length == 9) {
     phone = '254' + phone;
   } else if (phone.startsWith('254') && phone.length == 12) {
-    // already correct
   } else if (phone.startsWith('+254')) {
     phone = phone.substring(1);
   } else {
-    // fallback: try to force to 2547xxxxxxx
     if (!phone.startsWith('254')) {
       phone = '254' + phone;
     }
   }
 
-    final url = Uri.parse('https://paymentendpoint.pythonanywhere.com/api/mpesa/stkpush'); // Update with your backend address
+    final url = Uri.parse('https://paymentendpoint.pythonanywhere.com/api/mpesa/stkpush');
     final response = await http.post(
       url,
         headers: {

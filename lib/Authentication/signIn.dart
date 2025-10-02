@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:parkme/owner/owner_dashboard.dart';
+import 'package:parkme/owner/owner_dashboard_main.dart';
 import 'package:parkme/Authentication/signUp.dart';
 import 'package:parkme/constant.dart';
 import 'package:parkme/UserDashboard/dashboard.dart';
@@ -164,7 +164,7 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
           destination = AdminDashboardPage();
           break;
         case 'owner':
-          destination = OwnerDashboardPage();
+          destination = const OwnerDashboard();
           break;
         default:
           destination = Dashboard(user: user);

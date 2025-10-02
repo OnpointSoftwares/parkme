@@ -1,3 +1,15 @@
+// DEPRECATED: This file is kept for backward compatibility only.
+// Please use the new modular dashboard: owner_dashboard_main.dart
+//
+// The owner dashboard has been refactored into a modular, production-ready structure:
+// - owner_dashboard_main.dart: Main dashboard with navigation
+// - screens/: Individual screen components
+// - widgets/: Reusable UI components
+// - models/: Data models
+// - services/: Business logic and Firebase operations
+//
+// See owner/README.md for complete documentation.
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -5,13 +17,35 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'owner_dashboard_main.dart';
 
+/// Deprecated: Use OwnerDashboard from owner_dashboard_main.dart instead
+@Deprecated('Use OwnerDashboard from owner_dashboard_main.dart')
 class OwnerDashboardPage extends StatefulWidget {
+  const OwnerDashboardPage({Key? key}) : super(key: key);
+  
   @override
   _OwnerDashboardPageState createState() => _OwnerDashboardPageState();
 }
 
+@Deprecated('Use OwnerDashboard from owner_dashboard_main.dart')
 class _OwnerDashboardPageState extends State<OwnerDashboardPage> {
+  @override
+  Widget build(BuildContext context) {
+    // Redirect to new modular dashboard
+    return const OwnerDashboard();
+  }
+}
+
+// Legacy code preserved below for reference
+// ============================================
+
+class _LegacyOwnerDashboardPage extends StatefulWidget {
+  @override
+  _LegacyOwnerDashboardPageState createState() => _LegacyOwnerDashboardPageState();
+}
+
+class _LegacyOwnerDashboardPageState extends State<_LegacyOwnerDashboardPage> {
   int _currentIndex = 0;
   final List<Widget> _tabs = [
     MyParkingSpotsTab(),
@@ -254,31 +288,46 @@ class _MyParkingSpotsTabState extends State<MyParkingSpotsTab> {
       builder: (context) => AddParkingSpotDialog(),
     ).then((newSpot) async {
       if (newSpot != null) {
-        final db = FirebaseDatabase.instance;
-        final ref = db.ref('parkingCentres').push();
-        await ref.set({
-          'name': newSpot.name,
-          'address': newSpot.address,
-          'totalSpots': newSpot.totalSpots,
-          'occupiedSpots': newSpot.occupiedSpots,
-          'imageUrl': newSpot.imageUrl,
-          'costPerHour': newSpot.costPerHour,
-          'ownerId': FirebaseAuth.instance.currentUser?.uid ?? '',
-          'city': newSpot.city,
-          'state': newSpot.state,
-          'zipCode': newSpot.zipCode,
-          'type': newSpot.type,
-          'size': newSpot.size,
-          'amenities': newSpot.amenities,
-          'description': newSpot.description,
-          'isActive': newSpot.isActive,
-          'position': newSpot.position != null 
-              ? {
-                  'latitude': newSpot.position!.latitude,
-                  'longitude': newSpot.position!.longitude,
-                }
-              : null,
-        });
+        try {
+          final db = FirebaseDatabase.instance;
+          final ref = db.ref('parkingCentres').push();
+          
+          Map<String, dynamic> spotData = {
+            'name': newSpot.name,
+            'address': newSpot.address,
+            'totalSpots': newSpot.totalSpots,
+            'occupiedSpots': newSpot.occupiedSpots,
+            'imageUrl': newSpot.imageUrl,
+            'costPerHour': newSpot.costPerHour,
+            'ownerId': FirebaseAuth.instance.currentUser?.uid ?? '',
+            'city': newSpot.city,
+            'state': newSpot.state,
+            'zipCode': newSpot.zipCode,
+            'type': newSpot.type,
+            'size': newSpot.size,
+            'amenities': newSpot.amenities,
+            'description': newSpot.description,
+            'isActive': newSpot.isActive,
+          };
+
+          // Add position data if it exists
+          if (newSpot.position != null) {
+            spotData['position'] = {
+              'latitude': newSpot.position!.latitude,
+              'longitude': newSpot.position!.longitude,
+            };
+            print('Saving to Firebase - Position: ${newSpot.position!.latitude}, ${newSpot.position!.longitude}');
+          } else {
+            print('Warning: No position data available for parking spot');
+          }
+
+          await ref.set(spotData);
+        } catch (e) {
+          print('Error saving parking spot: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save parking spot: $e')),
+          );
+        }
       }
     });
   }
@@ -789,6 +838,14 @@ class _AddParkingSpotDialogState extends State<AddParkingSpotDialog> {
 
   void _saveParkingSpot() {
     if (_formKey.currentState!.validate()) {
+      // Ensure position is required for new spots
+      if (widget.existingSpot == null && positionSelected == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a location on the map')),
+        );
+        return;
+      }
+
       final newSpot = ParkingSpot(
         id: widget.existingSpot?.id ?? DateTime.now().millisecondsSinceEpoch,
         name: _nameController.text,
@@ -806,8 +863,14 @@ class _AddParkingSpotDialogState extends State<AddParkingSpotDialog> {
         amenities: _selectedAmenities,
         description: _descriptionController.text,
         isActive: _isActive,
-        position: positionSelected,
+        position: positionSelected ?? widget.existingSpot?.position,
       );
+
+      if (positionSelected != null) {
+        print('Saving position: ${positionSelected!.latitude}, ${positionSelected!.longitude}');
+      } else {
+        print('No position selected, using existing: ${widget.existingSpot?.position}');
+      }
 
       Navigator.pop(context, newSpot);
     }
@@ -827,6 +890,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
   void _onTap(LatLng position) async {
     setState(() {
       selectedLocation = position;
+      selectedAddress = 'Getting address...';
     });
 
     try {
@@ -837,22 +901,62 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        String address = [
-          place.street,
-          place.subLocality,
-          place.locality,
-          place.administrativeArea,
-          place.country,
-        ].where((e) => e != null && e.isNotEmpty).join(', ');
+        
+        // Build address parts safely
+        List<String> addressParts = [];
+        
+        // Helper function to safely add address parts
+        void addIfNotEmpty(String? value) {
+          if (value != null && value.trim().isNotEmpty) {
+            addressParts.add(value);
+          }
+        }
+        
+        // Add address components in order of specificity
+        addIfNotEmpty(place.street);
+        addIfNotEmpty(place.subLocality);
+        addIfNotEmpty(place.locality);
+        addIfNotEmpty(place.subAdministrativeArea);
+        addIfNotEmpty(place.administrativeArea);
+        addIfNotEmpty(place.postalCode);
+        addIfNotEmpty(place.country);
+        
+        // If we couldn't get any address components, use coordinates
+        String address;
+        if (addressParts.isNotEmpty) {
+          address = addressParts.join(', ');
+        } else {
+          address = '${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}';
+        }
 
-        setState(() {
-          selectedAddress = address;
-        });
+        if (mounted) {
+          setState(() {
+            selectedAddress = address;
+          });
+        }
+      } else {
+        // If no placemarks found, use coordinates
+        if (mounted) {
+          setState(() {
+            selectedAddress = '${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}';
+          });
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error getting address: $e')),
-      );
+      debugPrint('Error getting address: $e');
+      if (mounted) {
+        setState(() {
+          // Fallback to coordinates if geocoding fails
+          selectedAddress = '${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}';
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Using coordinates. Could not get full address.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 

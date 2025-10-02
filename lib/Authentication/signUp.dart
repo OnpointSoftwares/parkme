@@ -6,6 +6,7 @@ import 'package:parkme/UserDashboard/dashboard.dart';
 import 'package:parkme/constant.dart';
 import 'package:parkme/net/firebase.dart';
 import 'package:parkme/net/database.dart';
+import 'package:parkme/owner/owner_dashboard.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -19,9 +20,11 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isSuccess=false;
+  String _selectedUserType = 'user'; // 'user' or 'owner'
   
   @override
   void dispose() {
+    _displayName.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -149,6 +152,144 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     SizedBox(
+                      height: 24,
+                    ),
+                    // User Type Selection
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "I am a:",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedUserType = 'user';
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: _selectedUserType == 'user'
+                                          ? kprimaryColor.withOpacity(0.1)
+                                          : Colors.grey.shade50,
+                                      border: Border.all(
+                                        color: _selectedUserType == 'user'
+                                            ? kprimaryColor
+                                            : Colors.grey.shade300,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.directions_car,
+                                          size: 40,
+                                          color: _selectedUserType == 'user'
+                                              ? kprimaryColor
+                                              : Colors.grey.shade600,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Car Owner',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: _selectedUserType == 'user'
+                                                ? kprimaryColor
+                                                : Colors.grey.shade700,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Find parking',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedUserType = 'owner';
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: _selectedUserType == 'owner'
+                                          ? kprimaryColor.withOpacity(0.1)
+                                          : Colors.grey.shade50,
+                                      border: Border.all(
+                                        color: _selectedUserType == 'owner'
+                                            ? kprimaryColor
+                                            : Colors.grey.shade300,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.local_parking,
+                                          size: 40,
+                                          color: _selectedUserType == 'owner'
+                                              ? kprimaryColor
+                                              : Colors.grey.shade600,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Parking Owner',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: _selectedUserType == 'owner'
+                                                ? kprimaryColor
+                                                : Colors.grey.shade700,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'List your space',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
                       height: 16,
                     ),
                     Container(
@@ -218,34 +359,53 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _registerAccount() async {
-  final User? user = (await _auth.createUserWithEmailAndPassword(
-    email: _emailController.text.trim(),
-    password: _passwordController.text.trim(),
-  )).user;
+  try {
+    final User? user = (await _auth.createUserWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    )).user;
 
-  if (user != null) {
-    await user.updateProfile(displayName: _displayName.text);
-    userSetup(_displayName.text);
-    final user1 = _auth.currentUser;
-    // Create a new document for the user with uid and role
-    final db = FirebaseDatabase.instance;
-    await db.ref('users/${user.uid}').set({
-      'email': _emailController.text.trim(),
-      'name': _displayName.text.trim(),
-      'role': 'user', // default role
-      'createdAt': DateTime.now().toIso8601String(),
-    });
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) {
-          return Dashboard(
-            user: user1 as User,
-          );
-        },
-      ),
-    );
-  } else {
-    // todo: Notify the user that sign-up was not successful along with the error
+    if (user != null) {
+      await user.updateProfile(displayName: _displayName.text);
+      userSetup(_displayName.text);
+      final user1 = _auth.currentUser;
+      
+      // Create a new document for the user with uid and role
+      final db = FirebaseDatabase.instance;
+      await db.ref('users/${user.uid}').set({
+        'email': _emailController.text.trim(),
+        'name': _displayName.text.trim(),
+        'role': _selectedUserType, // Use selected user type
+        'createdAt': DateTime.now().toIso8601String(),
+      });
+
+      // Navigate based on user type
+      if (mounted) {
+        Widget destination;
+        if (_selectedUserType == 'owner') {
+          // Import the new modular dashboard
+          destination = OwnerDashboardPage();
+        } else {
+          destination = Dashboard(user: user1 as User);
+        }
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => destination),
+        );
+      }
+    } else {
+      _isSuccess = false;
+    }
+  } catch (e) {
+    // Show error message
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registration failed: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
     _isSuccess = false;
   }
 }

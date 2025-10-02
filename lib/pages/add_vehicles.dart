@@ -164,11 +164,21 @@ class _AddVehicleState extends State<AddVehicle> {
         throw Exception("User not authenticated");
       }
 
-      await DatabaseService(uid: user.uid)
-          .updateUserData(vehicle, owner, number);
+      // Use the new addVehicle method
+      await DatabaseService(uid: user.uid).addVehicle(
+        title: vehicle,
+        owner: owner,
+        vehicleNumber: number,
+      );
       
-      // Success - navigate back
+      // Show success message
       if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Vehicle added successfully"),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pop(context);
       }
     } catch (error) {

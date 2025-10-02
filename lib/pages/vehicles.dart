@@ -185,7 +185,7 @@ class GroupViewPage extends StatelessWidget {
                                           padding: EdgeInsets.only(
                                               left: 10, right: 10, top: 2),
                                           child: Text(
-                                            vehicle['number']?.toString() ?? 'No Number',
+                                            vehicle['vehicleNumber']?.toString() ?? 'No Number',
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey[600],
