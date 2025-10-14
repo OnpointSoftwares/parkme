@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isSuccess=false;
-  String _selectedUserType = 'user'; // 'user' or 'owner'
+  String _selectedUserType = 'user'; // 'user', 'owner', or 'kanjo'
   
   @override
   void dispose() {
@@ -176,115 +176,31 @@ class _SignUpState extends State<SignUp> {
                           Row(
                             children: [
                               Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedUserType = 'user';
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: _selectedUserType == 'user'
-                                          ? kprimaryColor.withOpacity(0.1)
-                                          : Colors.grey.shade50,
-                                      border: Border.all(
-                                        color: _selectedUserType == 'user'
-                                            ? kprimaryColor
-                                            : Colors.grey.shade300,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.directions_car,
-                                          size: 40,
-                                          color: _selectedUserType == 'user'
-                                              ? kprimaryColor
-                                              : Colors.grey.shade600,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Car Owner',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: _selectedUserType == 'user'
-                                                ? kprimaryColor
-                                                : Colors.grey.shade700,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          'Find parking',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                child: _buildUserTypeCard(
+                                  type: 'user',
+                                  icon: Icons.directions_car,
+                                  title: 'Car Owner',
+                                  subtitle: 'Find parking',
                                 ),
                               ),
                               SizedBox(width: 12),
                               Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedUserType = 'owner';
-                                    });
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: _selectedUserType == 'owner'
-                                          ? kprimaryColor.withOpacity(0.1)
-                                          : Colors.grey.shade50,
-                                      border: Border.all(
-                                        color: _selectedUserType == 'owner'
-                                            ? kprimaryColor
-                                            : Colors.grey.shade300,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.local_parking,
-                                          size: 40,
-                                          color: _selectedUserType == 'owner'
-                                              ? kprimaryColor
-                                              : Colors.grey.shade600,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Parking Owner',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: _selectedUserType == 'owner'
-                                                ? kprimaryColor
-                                                : Colors.grey.shade700,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          'List your space',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                child: _buildUserTypeCard(
+                                  type: 'owner',
+                                  icon: Icons.local_parking,
+                                  title: 'Parking Owner',
+                                  subtitle: 'List your space',
                                 ),
                               ),
                             ],
+                          ),
+                          SizedBox(height: 12),
+                          _buildUserTypeCard(
+                            type: 'kanjo',
+                            icon: Icons.security,
+                            title: 'Kanjo Officer',
+                            subtitle: 'Enforcement & Compliance',
+                            fullWidth: true,
                           ),
                         ],
                       ),
@@ -358,6 +274,98 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+  Widget _buildUserTypeCard({
+    required String type,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    bool fullWidth = false,
+  }) {
+    final isSelected = _selectedUserType == type;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedUserType = type;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(fullWidth ? 12 : 16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? kprimaryColor.withOpacity(0.1)
+              : Colors.grey.shade50,
+          border: Border.all(
+            color: isSelected ? kprimaryColor : Colors.grey.shade300,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: fullWidth
+            ? Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 32,
+                    color: isSelected ? kprimaryColor : Colors.grey.shade600,
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: isSelected
+                                ? kprimaryColor
+                                : Colors.grey.shade700,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  Icon(
+                    icon,
+                    size: 40,
+                    color: isSelected ? kprimaryColor : Colors.grey.shade600,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? kprimaryColor : Colors.grey.shade700,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
   void _registerAccount() async {
   try {
     final User? user = (await _auth.createUserWithEmailAndPassword(
@@ -382,11 +390,23 @@ class _SignUpState extends State<SignUp> {
       // Navigate based on user type
       if (mounted) {
         Widget destination;
-        if (_selectedUserType == 'owner') {
-          // Import the new modular dashboard
-          destination = OwnerDashboardPage();
-        } else {
-          destination = Dashboard(user: user1 as User);
+        switch (_selectedUserType) {
+          case 'owner':
+            destination = OwnerDashboardPage();
+            break;
+          case 'kanjo':
+            // Kanjo officers need additional profile setup
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Kanjo officer account created. Please complete your profile.'),
+                backgroundColor: Colors.orange,
+                duration: Duration(seconds: 3),
+              ),
+            );
+            destination = Dashboard(user: user1 as User); // Temporary - will redirect to kanjo dashboard
+            break;
+          default:
+            destination = Dashboard(user: user1 as User);
         }
 
         Navigator.of(context).pushReplacement(

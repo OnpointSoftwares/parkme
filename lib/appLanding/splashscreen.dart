@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:parkme/constant.dart';
 import 'landingScreen.dart';
 import 'package:parkme/UserDashboard/dashboard.dart';
+import 'package:parkme/admin/admin_dashboard.dart';
+import 'package:parkme/owner/owner_dashboard_main.dart';
+import 'package:parkme/kanjo/screens/kanjo_dashboard.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -23,12 +27,43 @@ class _SplashState extends State<Splash> {
     User? user = FirebaseAuth.instance.currentUser;
     
     if (user != null) {
-      // User is logged in, go to Dashboard
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => Dashboard(user: user),
-        ),
-      );
+      // User is logged in, check their role
+      try {
+        final db = FirebaseDatabase.instance;
+        final snapshot = await db.ref('users/${user.uid}/role').get();
+        
+        final role = snapshot.exists ? snapshot.value as String? : null;
+        
+        if (!mounted) return;
+        
+        Widget destination;
+        switch (role) {
+          case 'admin':
+            destination = AdminDashboardPage();
+            break;
+          case 'owner':
+            destination = const OwnerDashboard();
+            break;
+          case 'kanjo':
+            destination = const KanjoDashboard();
+            break;
+          default:
+            destination = Dashboard(user: user);
+        }
+        
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => destination),
+        );
+      } catch (e) {
+        // If error fetching role, default to regular dashboard
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => Dashboard(user: user),
+            ),
+          );
+        }
+      }
     } else {
       // User is not logged in, go to Landing Screen
       Navigator.of(context).pushReplacement(
