@@ -5,6 +5,8 @@ import '../models/kanjo_models.dart';
 import '../widgets/kanjo_widgets.dart';
 import '../screens/record_violation_screen.dart';
 import '../screens/daily_report_screen.dart';
+import '../screens/manage_parking_spaces_screen.dart';
+import '../screens/violations_list_screen.dart';
 import '../screens/kanjo_profile_setup_screen.dart';
 
 /// Main dashboard for kanjo officers
@@ -319,12 +321,29 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
             const SizedBox(width: 12),
             Expanded(
               child: _buildActionCard(
-                icon: Icons.search,
-                title: 'Search\nVehicle',
+                icon: Icons.local_parking,
+                title: 'Manage\nSpaces',
                 color: Colors.green,
-                onTap: _searchVehicle,
+                onTap: _manageSpaces,
               ),
             ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                icon: Icons.list_alt,
+                title: 'All\nViolations',
+                color: Colors.orange,
+                onTap: _viewAllViolations,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(child: SizedBox()),
+            const SizedBox(width: 12),
+            const Expanded(child: SizedBox()),
           ],
         ),
       ],
@@ -530,17 +549,19 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
   }
 
   void _viewAllViolations() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('All Violations'),
-        content: const Text('View all violations feature coming soon'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ViolationsListScreen(),
+      ),
+    );
+  }
+
+  void _manageSpaces() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ManageParkingSpacesScreen(),
       ),
     );
   }

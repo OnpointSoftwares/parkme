@@ -147,6 +147,61 @@ class ParkingSpotService {
       rethrow;
     }
   }
+
+  /// Cancel a reservation owned by this owner (by reservation id) with optional reason
+  Future<void> cancelReservation({
+    required String reservationId,
+    String? reason,
+    bool refundIssued = false,
+  }) async {
+    try {
+      if (_currentUserId == null) {
+        throw Exception('User not authenticated');
+      }
+
+      final resRef = _dbRef.child('reservations/$reservationId');
+      final snapshot = await resRef.get();
+      if (!snapshot.exists) {
+        throw Exception('Reservation not found');
+      }
+
+      // Optional: verify this reservation belongs to one of the owner's spots
+      final data = snapshot.value as Map<dynamic, dynamic>;
+      final centre = (data['centre'] ?? '').toString();
+      if (centre.isEmpty) {
+        // proceed but warn
+        debugPrint('Warning: reservation has no centre field');
+      } else {
+        // Confirm owner owns the centre
+        final DataSnapshot? spotsSnapshot = _currentUserId == null
+          ? null
+          : await _dbRef
+              .child('parkingCentres')
+              .orderByChild('ownerId')
+              .equalTo(_currentUserId)
+              .get();
+        if (spotsSnapshot != null && spotsSnapshot.exists) {
+          final spotsMap = spotsSnapshot.value as Map<dynamic, dynamic>;
+          final ownerCentres = spotsMap.values
+              .map((s) => (s['name'] ?? '').toString())
+              .toSet();
+          if (!ownerCentres.contains(centre)) {
+            throw Exception('Unauthorized: reservation is not for your parking spot');
+          }
+        }
+      }
+
+      await resRef.update({
+        'status': 'canceled',
+        'canceledAt': DateTime.now().toIso8601String(),
+        'cancelReason': reason,
+        'refundIssued': refundIssued,
+      });
+    } catch (e) {
+      debugPrint('Error canceling reservation: $e');
+      rethrow;
+    }
+  }
   
   /// Validate parking spot data
   void _validateParkingSpot(ParkingSpot spot) {

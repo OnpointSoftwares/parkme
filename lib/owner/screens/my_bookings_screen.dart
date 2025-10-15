@@ -237,6 +237,66 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
     }).toList();
   }
 
+  Future<void> _cancelBookingFlow(Map<String, dynamic> booking) async {
+    final id = booking['id']?.toString();
+    if (id == null || id.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cannot cancel: missing booking ID'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
+    final reasonController = TextEditingController();
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Cancellation reason'),
+        content: TextField(
+          controller: reasonController,
+          decoration: const InputDecoration(hintText: 'Why are you canceling?'),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c), child: const Text('Close')),
+          TextButton(onPressed: () => Navigator.pop(c, reasonController.text.trim()), child: const Text('Confirm')),
+        ],
+      ),
+    );
+
+    if (reason == null) return;
+
+    try {
+      await _service.cancelReservation(
+        reservationId: id,
+        reason: reason.isEmpty ? null : reason,
+        refundIssued: true,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Booking canceled and refund flagged'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        setState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error canceling booking: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _showBookingDetails(Map<String, dynamic> booking) {
     showModalBottomSheet(
       context: context,
@@ -285,6 +345,27 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
                 _buildDetailRow('User ID', booking['uid'].toString()),
               if (booking['transactionID'] != null)
                 _buildDetailRow('Transaction ID', booking['transactionID'].toString()),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: (booking['status']?.toString() == 'canceled')
+                          ? null
+                          : () async {
+                              Navigator.pop(context);
+                              await _cancelBookingFlow(booking);
+                            },
+                      icon: const Icon(Icons.cancel),
+                      label: const Text('Cancel Booking'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red[600],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
