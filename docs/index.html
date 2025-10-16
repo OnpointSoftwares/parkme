@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkMe - User Documentation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="bi bi-p-square-fill"></i> ParkMe Documentation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#overview">Overview</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#user-guide">User Guide</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#owner-guide">Owner Guide</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#kanjo-guide">Kanjo Guide</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#admin-guide">Admin Guide</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-white text-center py-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">ParkMe User Documentation</h1>
+            <p class="lead">Your comprehensive guide to using the ParkMe parking management system</p>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        <!-- Overview Section -->
+        <section id="overview" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-info-circle"></i> Overview</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p class="lead">ParkMe is a comprehensive parking management system with four user roles:</p>
+                    <div class="row mt-4">
+                        <div class="col-md-3">
+                            <div class="role-card text-center p-3">
+                                <i class="bi bi-person-circle display-4 text-primary"></i>
+                                <h5 class="mt-2">Regular User</h5>
+                                <p class="small">Find and book parking</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="role-card text-center p-3">
+                                <i class="bi bi-building display-4 text-success"></i>
+                                <h5 class="mt-2">Parking Owner</h5>
+                                <p class="small">Manage spots & bookings</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="role-card text-center p-3">
+                                <i class="bi bi-shield-check display-4 text-warning"></i>
+                                <h5 class="mt-2">Kanjo Officer</h5>
+                                <p class="small">Enforce parking rules</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="role-card text-center p-3">
+                                <i class="bi bi-gear-fill display-4 text-danger"></i>
+                                <h5 class="mt-2">Admin</h5>
+                                <p class="small">System management</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Guide -->
+        <section id="user-guide" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-person-circle"></i> Regular User Guide</h2>
+            
+            <div class="accordion" id="userAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#user1">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Getting Started
+                        </button>
+                    </h2>
+                    <div id="user1" class="accordion-collapse collapse show" data-bs-parent="#userAccordion">
+                        <div class="accordion-body">
+                            <h5>Registration & Login</h5>
+                            <ol>
+                                <li>Open the ParkMe app</li>
+                                <li>Click <strong>"Sign Up"</strong></li>
+                                <li>Enter your email, password, and phone number</li>
+                                <li>Select role: <span class="badge bg-primary">User</span></li>
+                                <li>Click <strong>"Register"</strong></li>
+                                <li>Login with your credentials</li>
+                            </ol>
+                            <div class="alert alert-info">
+                                <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> You can also sign in with Google for faster access!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#user2">
+                            <i class="bi bi-car-front me-2"></i> Adding Vehicles
+                        </button>
+                    </h2>
+                    <div id="user2" class="accordion-collapse collapse" data-bs-parent="#userAccordion">
+                        <div class="accordion-body">
+                            <h5>Add Your Vehicle</h5>
+                            <ol>
+                                <li>Navigate to <strong>"My Vehicles"</strong> tab</li>
+                                <li>Click <strong>"Add New Vehicle"</strong></li>
+                                <li>Enter vehicle details:
+                                    <ul>
+                                        <li>Vehicle Number (e.g., KAA 123A)</li>
+                                        <li>Vehicle Title/Model</li>
+                                        <li>Owner Name</li>
+                                    </ul>
+                                </li>
+                                <li>Click <strong>"Save"</strong></li>
+                            </ol>
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Vehicle number is required for bookings and violation tracking
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#user3">
+                            <i class="bi bi-calendar-check me-2"></i> Booking Parking
+                        </button>
+                    </h2>
+                    <div id="user3" class="accordion-collapse collapse" data-bs-parent="#userAccordion">
+                        <div class="accordion-body">
+                            <h5>Make a Reservation</h5>
+                            <ol>
+                                <li>Go to <strong>"Dashboard"</strong></li>
+                                <li>Browse available parking spots</li>
+                                <li>Select a parking location</li>
+                                <li>Choose:
+                                    <ul>
+                                        <li>Date</li>
+                                        <li>Check-in time</li>
+                                        <li>Check-out time</li>
+                                        <li>Vehicle</li>
+                                    </ul>
+                                </li>
+                                <li>Review total cost</li>
+                                <li>Click <strong>"Confirm Booking"</strong></li>
+                                <li>Complete payment via M-Pesa</li>
+                            </ol>
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> You'll receive a confirmation with booking details and QR code
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#user4">
+                            <i class="bi bi-list-check me-2"></i> Managing Bookings
+                        </button>
+                    </h2>
+                    <div id="user4" class="accordion-collapse collapse" data-bs-parent="#userAccordion">
+                        <div class="accordion-body">
+                            <h5>View Your Bookings</h5>
+                            <ol>
+                                <li>Navigate to <strong>"My Bookings"</strong></li>
+                                <li>Filter by: All, Today, Upcoming, Completed</li>
+                                <li>Tap any booking to view details</li>
+                                <li>View QR code for check-in</li>
+                            </ol>
+                            <h5 class="mt-3">Booking Status</h5>
+                            <ul class="list-unstyled">
+                                <li><span class="badge bg-warning">Pending</span> - Awaiting confirmation</li>
+                                <li><span class="badge bg-info">Confirmed</span> - Ready for check-in</li>
+                                <li><span class="badge bg-primary">Checked In</span> - Currently parked</li>
+                                <li><span class="badge bg-success">Completed</span> - Finished</li>
+                                <li><span class="badge bg-danger">Canceled</span> - Canceled by owner</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Owner Guide -->
+        <section id="owner-guide" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-building"></i> Parking Owner Guide</h2>
+            
+            <div class="accordion" id="ownerAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#owner1">
+                            <i class="bi bi-plus-circle me-2"></i> Adding Parking Spots
+                        </button>
+                    </h2>
+                    <div id="owner1" class="accordion-collapse collapse show" data-bs-parent="#ownerAccordion">
+                        <div class="accordion-body">
+                            <h5>Create a New Parking Spot</h5>
+                            <ol>
+                                <li>Go to <strong>"My Spots"</strong> tab</li>
+                                <li>Click <strong>"Add Spot"</strong> button</li>
+                                <li>Fill in details:
+                                    <ul>
+                                        <li>Name (e.g., "Downtown Parking")</li>
+                                        <li>Address</li>
+                                        <li>City, State, Zip Code</li>
+                                        <li>Type (Open, Covered, Underground)</li>
+                                        <li>Size (Small, Medium, Large)</li>
+                                        <li>Total Spots</li>
+                                        <li>Cost per Hour (KES)</li>
+                                        <li>Description</li>
+                                        <li>Amenities (Security, CCTV, etc.)</li>
+                                    </ul>
+                                </li>
+                                <li>Set location on map</li>
+                                <li>Click <strong>"Save"</strong></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#owner2">
+                            <i class="bi bi-pencil-square me-2"></i> Managing Spots
+                        </button>
+                    </h2>
+                    <div id="owner2" class="accordion-collapse collapse" data-bs-parent="#ownerAccordion">
+                        <div class="accordion-body">
+                            <h5>Edit or Delete Spots</h5>
+                            <ol>
+                                <li>Tap on any parking spot card</li>
+                                <li>Use the menu (⋮) to:
+                                    <ul>
+                                        <li><strong>Edit</strong> - Update details</li>
+                                        <li><strong>Activate/Deactivate</strong> - Control visibility</li>
+                                        <li><strong>Delete</strong> - Remove permanently</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <div class="alert alert-info">
+                                <i class="bi bi-lightbulb"></i> Deactivate spots temporarily instead of deleting to preserve booking history
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#owner3">
+                            <i class="bi bi-calendar2-check me-2"></i> Managing Bookings
+                        </button>
+                    </h2>
+                    <div id="owner3" class="accordion-collapse collapse" data-bs-parent="#ownerAccordion">
+                        <div class="accordion-body">
+                            <h5>View & Manage Reservations</h5>
+                            <ol>
+                                <li>Go to <strong>"Bookings"</strong> tab</li>
+                                <li>View all bookings for your spots</li>
+                                <li>Filter by: All, Today, Upcoming, Completed</li>
+                                <li>Tap booking to view details</li>
+                            </ol>
+                            <h5 class="mt-3">Cancel a Booking</h5>
+                            <ol>
+                                <li>Open booking details</li>
+                                <li>Click <strong>"Cancel Booking"</strong></li>
+                                <li>Enter cancellation reason</li>
+                                <li>Confirm cancellation</li>
+                                <li>Refund is automatically flagged</li>
+                            </ol>
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Always provide a clear reason when canceling bookings
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#owner4">
+                            <i class="bi bi-graph-up me-2"></i> Statistics
+                        </button>
+                    </h2>
+                    <div id="owner4" class="accordion-collapse collapse" data-bs-parent="#ownerAccordion">
+                        <div class="accordion-body">
+                            <h5>View Performance Metrics</h5>
+                            <ol>
+                                <li>Toggle <strong>Statistics</strong> icon in "My Spots"</li>
+                                <li>View:
+                                    <ul>
+                                        <li>Total Spots</li>
+                                        <li>Total Capacity</li>
+                                        <li>Currently Occupied</li>
+                                        <li>Available Spaces</li>
+                                        <li>Occupancy Rate</li>
+                                        <li>Active Spots</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kanjo Guide -->
+        <section id="kanjo-guide" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-shield-check"></i> Kanjo Officer Guide</h2>
+            
+            <div class="accordion" id="kanjoAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#kanjo1">
+                            <i class="bi bi-person-badge me-2"></i> Profile Setup
+                        </button>
+                    </h2>
+                    <div id="kanjo1" class="accordion-collapse collapse show" data-bs-parent="#kanjoAccordion">
+                        <div class="accordion-body">
+                            <h5>Complete Your Officer Profile</h5>
+                            <ol>
+                                <li>First login will prompt profile setup</li>
+                                <li>Enter:
+                                    <ul>
+                                        <li>Badge Number (e.g., NCC-001)</li>
+                                        <li>Department (pre-filled: Parking Enforcement)</li>
+                                        <li>Zone Assignment (CBD, Westlands, etc.)</li>
+                                        <li>Contact Number (+254...)</li>
+                                    </ul>
+                                </li>
+                                <li>Click <strong>"Complete Setup"</strong></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kanjo2">
+                            <i class="bi bi-exclamation-triangle me-2"></i> Recording Violations
+                        </button>
+                    </h2>
+                    <div id="kanjo2" class="accordion-collapse collapse" data-bs-parent="#kanjoAccordion">
+                        <div class="accordion-body">
+                            <h5>Record a Parking Violation</h5>
+                            <ol>
+                                <li>Click <strong>"Record Violation"</strong> on dashboard</li>
+                                <li>Select vehicle:
+                                    <ul>
+                                        <li>Choose from registered vehicles dropdown, OR</li>
+                                        <li>Enter vehicle number manually</li>
+                                    </ul>
+                                </li>
+                                <li>Set location:
+                                    <ul>
+                                        <li>Use <strong>"Get Current Location"</strong>, OR</li>
+                                        <li>Enter manually</li>
+                                    </ul>
+                                </li>
+                                <li>Select violation type:
+                                    <ul>
+                                        <li>Illegal Parking</li>
+                                        <li>Expired Meter</li>
+                                        <li>No Parking Zone</li>
+                                        <li>Blocking Traffic</li>
+                                        <li>Double Parking</li>
+                                    </ul>
+                                </li>
+                                <li>Penalty amount auto-fills</li>
+                                <li>Add description (optional)</li>
+                                <li>Click <strong>"Submit Violation"</strong></li>
+                            </ol>
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> Violation is saved with timestamp and GPS coordinates
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kanjo3">
+                            <i class="bi bi-list-ul me-2"></i> Viewing Violations
+                        </button>
+                    </h2>
+                    <div id="kanjo3" class="accordion-collapse collapse" data-bs-parent="#kanjoAccordion">
+                        <div class="accordion-body">
+                            <h5>Access Violations List</h5>
+                            <ol>
+                                <li>Click <strong>"All Violations"</strong> on dashboard</li>
+                                <li>View complete list with:
+                                    <ul>
+                                        <li>Vehicle number</li>
+                                        <li>Violation type</li>
+                                        <li>Penalty amount</li>
+                                        <li>Location</li>
+                                        <li>Timestamp</li>
+                                        <li>Payment status (Paid/Pending)</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <p><strong>Status Indicators:</strong></p>
+                            <ul>
+                                <li><span class="badge bg-success">✓ Paid</span> - Violation settled</li>
+                                <li><span class="badge bg-warning">⚠ Pending</span> - Payment due</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kanjo4">
+                            <i class="bi bi-geo-alt me-2"></i> Managing Parking Spaces
+                        </button>
+                    </h2>
+                    <div id="kanjo4" class="accordion-collapse collapse" data-bs-parent="#kanjoAccordion">
+                        <div class="accordion-body">
+                            <h5>Add County-Managed Parking</h5>
+                            <ol>
+                                <li>Click <strong>"Manage Spaces"</strong></li>
+                                <li>Click <strong>"Add Space"</strong></li>
+                                <li>Edit the created space:
+                                    <ul>
+                                        <li>Title</li>
+                                        <li>Location (click <strong>"Map"</strong> button)</li>
+                                        <li>Description</li>
+                                        <li>Capacity & Available spots</li>
+                                        <li>Hourly Rate (KES)</li>
+                                    </ul>
+                                </li>
+                                <li>Click <strong>"Save Changes"</strong></li>
+                            </ol>
+                            <h5 class="mt-3">Using Map Picker</h5>
+                            <ol>
+                                <li>Click <strong>"Map"</strong> button next to location</li>
+                                <li>Tap anywhere on map to select location</li>
+                                <li>Drag marker for precise positioning</li>
+                                <li>Use <strong>"My Location"</strong> for current GPS</li>
+                                <li>Address auto-fills from coordinates</li>
+                                <li>Click <strong>"Confirm Location"</strong></li>
+                            </ol>
+                            <h5 class="mt-3">View Bookings</h5>
+                            <ol>
+                                <li>Select a parking space</li>
+                                <li>Click menu → <strong>"View Bookings"</strong></li>
+                                <li>Cancel bookings with reason if needed</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kanjo5">
+                            <i class="bi bi-file-earmark-text me-2"></i> Daily Reports
+                        </button>
+                    </h2>
+                    <div id="kanjo5" class="accordion-collapse collapse" data-bs-parent="#kanjoAccordion">
+                        <div class="accordion-body">
+                            <h5>Generate Reports</h5>
+                            <ol>
+                                <li>Click <strong>"Daily Report"</strong> on dashboard</li>
+                                <li>View summary of:
+                                    <ul>
+                                        <li>Total violations recorded</li>
+                                        <li>Total penalties issued</li>
+                                        <li>Payments collected</li>
+                                        <li>Outstanding fines</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Guide -->
+        <section id="admin-guide" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-gear-fill"></i> Admin Guide</h2>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5>System Administration</h5>
+                    <ol>
+                        <li>Access admin dashboard after login</li>
+                        <li>Manage:
+                            <ul>
+                                <li>User accounts</li>
+                                <li>Parking spot approvals</li>
+                                <li>Owner registrations</li>
+                                <li>System settings</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <h5 class="mt-3">Approve Parking Spots</h5>
+                    <ol>
+                        <li>Navigate to <strong>"Approve Parking Spots"</strong></li>
+                        <li>Review pending submissions</li>
+                        <li>Approve or reject with comments</li>
+                    </ol>
+                    <h5 class="mt-3">Add Owner</h5>
+                    <ol>
+                        <li>Click <strong>"Add Owner"</strong></li>
+                        <li>Fill owner details form</li>
+                        <li>Submit for registration</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Support Section -->
+        <section id="support" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-question-circle"></i> Support & Contact</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5><i class="bi bi-envelope"></i> Email Support</h5>
+                            <p>support@parkme.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 ParkMe. All rights reserved.</p>
+            <p class="small">Your parking partner</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
