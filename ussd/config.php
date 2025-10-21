@@ -10,8 +10,8 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 // Firebase Realtime Database configuration
-define('FIREBASE_URL', 'https://your-project-id.firebaseio.com');
-define('FIREBASE_SECRET', 'your-firebase-secret-key');
+define('FIREBASE_URL', 'https://mechanicfinder-d0833-default-rtdb.firebaseio.com');
+define('FIREBASE_SECRET', 'Av4sMf7cSb4yjXOywPUWZXQ96aQneHGulnNeoXz0');
 
 // Timezone
 date_default_timezone_set('Africa/Nairobi');
