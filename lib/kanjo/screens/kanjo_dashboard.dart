@@ -8,6 +8,7 @@ import '../screens/daily_report_screen.dart';
 import '../screens/manage_parking_spaces_screen.dart';
 import '../screens/violations_list_screen.dart';
 import '../screens/kanjo_profile_setup_screen.dart';
+import '../../utils/app_theme.dart';
 
 /// Main dashboard for kanjo officers
 class KanjoDashboard extends StatefulWidget {
@@ -54,8 +55,13 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        backgroundColor: AppTheme.primaryDark,
+        body: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryYellow),
+          ),
+        ),
       );
     }
 
@@ -64,10 +70,11 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
     }
 
     return Scaffold(
+      backgroundColor: AppTheme.primaryDark,
       appBar: AppBar(
         title: const Text('Kanjo Officer Dashboard'),
-        backgroundColor: Colors.orange[800],
-        foregroundColor: Colors.white,
+        backgroundColor: AppTheme.darkBackground,
+        foregroundColor: AppTheme.textLight,
         elevation: 0,
         actions: [
           IconButton(
@@ -127,9 +134,9 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _recordViolation,
-        icon: const Icon(Icons.add),
-        label: const Text('Record Violation'),
-        backgroundColor: Colors.orange[800],
+        icon: Icon(Icons.add, color: AppTheme.textDark),
+        label: Text('Record Violation', style: TextStyle(color: AppTheme.textDark)),
+        backgroundColor: AppTheme.primaryYellow,
       ),
     );
   }
@@ -161,30 +168,24 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.orange[800]!, Colors.orange[600]!],
+          colors: [AppTheme.darkBackground, AppTheme.primaryDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.orange.withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: AppTheme.primaryYellow, width: 2),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundColor: Colors.white,
+            backgroundColor: AppTheme.primaryYellow,
             child: Text(
               _currentOfficer!.name.substring(0, 1).toUpperCase(),
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.orange[800],
+                color: AppTheme.textDark,
               ),
             ),
           ),
@@ -195,32 +196,32 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
               children: [
                 Text(
                   _currentOfficer!.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppTheme.textLight,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Badge: ${_currentOfficer!.badgeNumber}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white,
+                    color: AppTheme.primaryYellow,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Zone: ${_currentOfficer!.zone}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white,
+                    color: AppTheme.textGrey,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.verified, color: Colors.white, size: 28),
+          Icon(Icons.verified, color: AppTheme.primaryYellow, size: 28),
         ],
       ),
     );
@@ -232,11 +233,12 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Today\'s Summary',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
+            color: AppTheme.textLight,
           ),
         ),
         const SizedBox(height: 16),
@@ -291,11 +293,12 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Quick Actions',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
+            color: AppTheme.textLight,
           ),
         ),
         const SizedBox(height: 16),
@@ -357,18 +360,19 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Recent Violations',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: AppTheme.textLight,
               ),
             ),
             TextButton(
               onPressed: _viewAllViolations,
               child: Text(
                 'View All',
-                style: TextStyle(color: Colors.orange[800]),
+                style: TextStyle(color: AppTheme.primaryYellow),
               ),
             ),
           ],
@@ -411,7 +415,12 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.darkBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.textGrey.withOpacity(0.3)),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -427,7 +436,7 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: color,
+                  color: AppTheme.textLight,
                 ),
               ),
             ],
@@ -476,28 +485,28 @@ class _KanjoDashboardState extends State<KanjoDashboard> {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: AppTheme.darkBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: AppTheme.textGrey.withOpacity(0.3)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.assignment_outlined, size: 48, color: Colors.grey[400]),
+          Icon(Icons.assignment_outlined, size: 48, color: AppTheme.textGrey),
           const SizedBox(height: 16),
           Text(
             'No Violations Yet',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+              color: AppTheme.textLight,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Record your first violation to get started',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey[500]),
+            style: TextStyle(color: AppTheme.textGrey),
           ),
         ],
       ),

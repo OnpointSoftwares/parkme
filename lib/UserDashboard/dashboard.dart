@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:parkme/constant.dart';
 import 'package:parkme/pages/vehicles.dart';
 import '../pages/map_view.dart';
 import '../pages/my_profile.dart';
+import '../utils/app_theme.dart';
 
 import 'package:parkme/admin/admin_dashboard.dart';
 import 'package:parkme/owner/owner_dashboard.dart';
@@ -26,15 +26,12 @@ class _DashboardState extends State<Dashboard> {
   ];
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-    return Container(
-      height: height,
-      width: width,
-      color: Colors.white,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Dashboard'),
+    return Scaffold(
+      backgroundColor: AppTheme.primaryDark,
+      appBar: AppBar(
+        title: Text('Dashboard'),
+        backgroundColor: AppTheme.darkBackground,
+        foregroundColor: AppTheme.textLight,
           actions: [
             IconButton(
               icon: Icon(Icons.admin_panel_settings),
@@ -93,6 +90,7 @@ class _DashboardState extends State<Dashboard> {
         body: tabs[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
+          backgroundColor: AppTheme.darkBackground,
           type: BottomNavigationBarType.fixed,
           items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -108,7 +106,8 @@ class _DashboardState extends State<Dashboard> {
               label:'My Profile',
             ),
           ],
-          selectedItemColor: kprimaryColor,
+          selectedItemColor: AppTheme.primaryYellow,
+          unselectedItemColor: AppTheme.textGrey,
           onTap: (index) {
             setState(() {
               _currentIndex = index;
@@ -116,7 +115,6 @@ class _DashboardState extends State<Dashboard> {
           },
         ),
       ),
-
     );
   }
 }

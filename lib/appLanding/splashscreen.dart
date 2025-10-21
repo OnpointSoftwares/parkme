@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:parkme/constant.dart';
 import 'landingScreen.dart';
 import 'package:parkme/UserDashboard/dashboard.dart';
 import 'package:parkme/admin/admin_dashboard.dart';
 import 'package:parkme/owner/owner_dashboard_main.dart';
 import 'package:parkme/kanjo/screens/kanjo_dashboard.dart';
+import '../utils/app_theme.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -77,26 +77,41 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.primaryDark,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              "assets/images/parkmeLogo.png",
-              width: 100.0,
-              height: 100.0,
+            AppTheme.logo(size: 120),
+            SizedBox(height: 32),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'PARK',
+                    style: AppTheme.headingStyle.copyWith(fontSize: 36),
+                  ),
+                  TextSpan(
+                    text: 'ING',
+                    style: AppTheme.headingStyle.copyWith(
+                      fontSize: 36,
+                      color: AppTheme.primaryYellow,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(kprimaryColor),
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryYellow),
+              strokeWidth: 3,
             ),
             SizedBox(height: 20),
             Text(
               "Loading...",
               style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
+                color: AppTheme.textGrey,
+                fontSize: 14,
               ),
             ),
           ],

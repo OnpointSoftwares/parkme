@@ -12,6 +12,7 @@ import 'package:parkme/kanjo/screens/kanjo_dashboard.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'ResetPassword.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../utils/app_theme.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -232,124 +233,56 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-    required IconData icon,
     required String? Function(String?) validator,
     bool obscureText = false,
     TextInputType keyboardType = TextInputType.text,
     Widget? suffixIcon,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        validator: _showValidation ? validator : null,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: kprimaryColor),
-          suffixIcon: suffixIcon,
-          labelStyle: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w500,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: kprimaryColor, width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.red, width: 2),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.red, width: 2),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTheme.labelStyle,
+        ),
+        SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          validator: _showValidation ? validator : null,
+          style: AppTheme.inputStyle,
+          decoration: AppTheme.inputDecoration(label).copyWith(
+            suffixIcon: suffixIcon,
           ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildSignInButton() {
-    return ScaleTransition(
-      scale: _buttonScaleAnimation,
-      child: Container(
-        height: 60,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: [kprimaryColor, kprimaryColor.withOpacity(0.8)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: kprimaryColor.withOpacity(0.4),
-              blurRadius: 15,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: _isLoading ? null : _signInWithEmailAndPassword,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          child: _isLoading
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _signInWithEmailAndPassword,
+        style: AppTheme.primaryButtonStyle,
+        child: _isLoading
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: AppTheme.textDark,
+                      strokeWidth: 2,
                     ),
-                    SizedBox(width: 12),
-                    Text(
-                      'Signing In...',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                )
-              : Text(
-                  'SIGN IN',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
                   ),
-                ),
-        ),
+                  SizedBox(width: 12),
+                  Text('Signing In...', style: AppTheme.buttonTextStyle),
+                ],
+              )
+            : Text('SIGN IN', style: AppTheme.buttonTextStyle),
       ),
     );
   }
@@ -437,180 +370,124 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kprimaryBgColor,
+      backgroundColor: AppTheme.primaryDark,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(height: 60),
-                      
-                      // Logo with animation
-                      ScaleTransition(
-                        scale: _logoAnimation,
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: kprimaryColor.withOpacity(0.2),
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: Image.asset(
-                              "assets/images/parkmeLogo.png",
-                              width: 80,
-                              height: 80,
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      SizedBox(height: 40),
-                      
-                      // Welcome text
-                      Text(
-                        "Welcome Back!",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      
-                      SizedBox(height: 8),
-                      
-                      Text(
-                        "Sign in to continue your journey",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      
-                      SizedBox(height: 50),
-                      
-                      // Email field
-                      _buildTextField(
-                        controller: _emailController,
-                        label: "Email Address",
-                        icon: Icons.email_outlined,
-                        validator: _validateEmail,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      
-                      SizedBox(height: 24),
-                      
-                      // Password field
-                      _buildTextField(
-                        controller: _passwordController,
-                        label: "Password",
-                        icon: Icons.lock_outline,
-                        validator: _validatePassword,
-                        obscureText: !_showPassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _showPassword ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.grey[600],
-                          ),
-                          onPressed: () {
-                            setState(() => _showPassword = !_showPassword);
-                            HapticFeedback.lightImpact();
-                          },
-                        ),
-                      ),
-                      
-                      SizedBox(height: 16),
-                      
-                      // Forgot password
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ResetPassword()),
-                            );
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: kprimaryColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      SizedBox(height: 32),
-                      
-                      // Sign in button
-                      _buildSignInButton(),
-                      
-                      SizedBox(height: 32),
-                      
-                      // Divider
-                      _buildDividerWithText("or continue with"),
-                      
-                      SizedBox(height: 24),
-                      
-                      // Google sign in
-                      _buildGoogleSignInButton(),
-                      
-                      SizedBox(height: 40),
-                      
-                      // Sign up link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Logo
+                  Center(child: AppTheme.logo(size: 100)),
+                  
+                  SizedBox(height: 24),
+                  
+                  // Title
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
                         children: [
-                          Text(
-                            "Don't have an account? ",
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
-                            ),
+                          TextSpan(
+                            text: 'PARK',
+                            style: AppTheme.headingStyle,
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => SignUp()),
-                              );
-                            },
-                            child: Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                color: kprimaryColor,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
+                          TextSpan(
+                            text: 'ING',
+                            style: AppTheme.headingStyle.copyWith(
+                              color: AppTheme.primaryYellow,
                             ),
                           ),
                         ],
                       ),
-                      
-                      SizedBox(height: 40),
+                    ),
+                  ),
+                  
+                  SizedBox(height: 60),
+                  
+                  // Username field
+                  _buildTextField(
+                    controller: _emailController,
+                    label: "Username",
+                    validator: _validateEmail,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  
+                  SizedBox(height: 24),
+                  
+                  // Password field
+                  _buildTextField(
+                    controller: _passwordController,
+                    label: "Password",
+                    validator: _validatePassword,
+                    obscureText: !_showPassword,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _showPassword ? Icons.visibility_off : Icons.visibility,
+                        color: AppTheme.textGrey,
+                      ),
+                      onPressed: () {
+                        setState(() => _showPassword = !_showPassword);
+                        HapticFeedback.lightImpact();
+                      },
+                    ),
+                  ),
+                  
+                  SizedBox(height: 16),
+                  
+                  // Keep me signed in
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          value: true,
+                          onChanged: (val) {},
+                          fillColor: MaterialStateProperty.all(AppTheme.primaryYellow),
+                          checkColor: AppTheme.textDark,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Keep me Signed In',
+                        style: TextStyle(
+                          color: AppTheme.primaryYellow,
+                          fontSize: 14,
+                        ),
+                      ),
                     ],
                   ),
-                ),
+                  
+                  SizedBox(height: 32),
+                  
+                  // Sign in button
+                  _buildSignInButton(),
+                  
+                  SizedBox(height: 16),
+                  
+                  // Forgot password
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ResetPassword()),
+                        );
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          color: AppTheme.textLight,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

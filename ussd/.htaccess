@@ -1,0 +1,44 @@
+# USSD Gateway Configuration
+# Ensure proper routing and security
+
+# Enable rewrite engine
+RewriteEngine On
+
+# Force HTTPS (recommended for production)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Route all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^(config|database)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow POST requests from USSD gateway
+<Limit GET POST>
+    Order allow,deny
+    Allow from all
+</Limit>
+
+# Set PHP settings
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 2M
+    php_value post_max_size 2M
+    php_value max_execution_time 30
+    php_value max_input_time 30
+</IfModule>

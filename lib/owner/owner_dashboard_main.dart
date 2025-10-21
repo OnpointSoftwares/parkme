@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/my_parking_spots_screen.dart';
 import 'screens/my_bookings_screen.dart';
+import '../utils/app_theme.dart';
 
 /// Main owner dashboard with navigation
 class OwnerDashboard extends StatefulWidget {
@@ -22,10 +23,11 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.primaryDark,
       appBar: AppBar(
         title: const Text('Owner Dashboard'),
-        backgroundColor: Colors.blue[800],
-        foregroundColor: Colors.white,
+        backgroundColor: AppTheme.darkBackground,
+        foregroundColor: AppTheme.textLight,
         elevation: 0,
         actions: [
           IconButton(
@@ -80,8 +82,9 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        selectedItemColor: Colors.blue[800],
-        unselectedItemColor: Colors.grey[600],
+        backgroundColor: AppTheme.darkBackground,
+        selectedItemColor: AppTheme.primaryYellow,
+        unselectedItemColor: AppTheme.textGrey,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         type: BottomNavigationBarType.fixed,
         items: const [

@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../parking/models.dart';
 import '../../parking/parking_service.dart';
 import '../widgets/map_location_picker.dart';
+import '../../utils/app_theme.dart';
 
 class ManageParkingSpacesScreen extends StatefulWidget {
   const ManageParkingSpacesScreen({Key? key}) : super(key: key);
@@ -20,11 +21,17 @@ class _ManageParkingSpacesScreenState extends State<ManageParkingSpacesScreen> {
   Widget build(BuildContext context) {
     final user = _auth.currentUser!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Parking Spaces')),
+      backgroundColor: AppTheme.primaryDark,
+      appBar: AppBar(
+        title: const Text('Manage Parking Spaces'),
+        backgroundColor: AppTheme.darkBackground,
+        foregroundColor: AppTheme.textLight,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addSpace,
-        icon: const Icon(Icons.add_location_alt),
-        label: const Text('Add Space'),
+        icon: Icon(Icons.add_location_alt, color: AppTheme.textDark),
+        label: Text('Add Space', style: TextStyle(color: AppTheme.textDark)),
+        backgroundColor: AppTheme.primaryYellow,
       ),
       body: StreamBuilder<List<ParkingSpace>>(
         stream: _service.spacesByOwner(user.uid),
@@ -50,14 +57,18 @@ class _ManageParkingSpacesScreenState extends State<ManageParkingSpacesScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.local_parking, size: 56, color: Colors.grey),
+          Icon(Icons.local_parking, size: 56, color: AppTheme.textGrey),
           const SizedBox(height: 8),
-          const Text('No parking spaces yet'),
-          const SizedBox(height: 8),
+          Text(
+            'No parking spaces yet',
+            style: TextStyle(color: AppTheme.textLight, fontSize: 16),
+          ),
+          const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: _addSpace,
             icon: const Icon(Icons.add),
             label: const Text('Create your first space'),
+            style: AppTheme.primaryButtonStyle,
           ),
         ],
       ),
@@ -67,12 +78,23 @@ class _ManageParkingSpacesScreenState extends State<ManageParkingSpacesScreen> {
   Widget _spaceTile(ParkingSpace s) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: AppTheme.darkBackground,
       child: ListTile(
-        leading: CircleAvatar(child: Text(s.title.isNotEmpty ? s.title[0].toUpperCase() : 'P')),
-        title: Text(s.title),
-        subtitle: Text('${s.location}\nKES ${s.hourlyRate.toStringAsFixed(0)}/hr • ${s.available}/${s.capacity} available'),
+        leading: CircleAvatar(
+          backgroundColor: AppTheme.primaryYellow,
+          child: Text(
+            s.title.isNotEmpty ? s.title[0].toUpperCase() : 'P',
+            style: TextStyle(color: AppTheme.textDark, fontWeight: FontWeight.bold),
+          ),
+        ),
+        title: Text(s.title, style: TextStyle(color: AppTheme.textLight, fontWeight: FontWeight.w600)),
+        subtitle: Text(
+          '${s.location}\nKES ${s.hourlyRate.toStringAsFixed(0)}/hr • ${s.available}/${s.capacity} available',
+          style: TextStyle(color: AppTheme.textGrey),
+        ),
         isThreeLine: true,
         trailing: PopupMenuButton<String>(
+          icon: Icon(Icons.more_vert, color: AppTheme.textLight),
           onSelected: (v) => _handleAction(v, s),
           itemBuilder: (c) => const [
             PopupMenuItem(value: 'edit', child: Text('Edit')),
@@ -154,16 +176,29 @@ class _ManageParkingSpacesScreenState extends State<ManageParkingSpacesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Edit Parking Space', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Edit Parking Space', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark)),
                   const SizedBox(height: 12),
-                  TextField(controller: title, decoration: const InputDecoration(labelText: 'Title')),
+                  TextField(
+                    controller: title,
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         child: TextField(
                           controller: location,
-                          decoration: const InputDecoration(labelText: 'Location'),
+                          decoration: InputDecoration(
+                            labelText: 'Location',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                          ),
                           readOnly: true,
                         ),
                       ),
@@ -187,26 +222,68 @@ class _ManageParkingSpacesScreenState extends State<ManageParkingSpacesScreen> {
                         icon: const Icon(Icons.map, size: 18),
                         label: const Text('Map'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange[800],
-                          foregroundColor: Colors.white,
+                          backgroundColor: AppTheme.primaryYellow,
+                          foregroundColor: AppTheme.textDark,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  TextField(controller: desc, decoration: const InputDecoration(labelText: 'Description'), maxLines: 2),
+                  TextField(
+                    controller: desc,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                    ),
+                    maxLines: 2,
+                  ),
                   const SizedBox(height: 8),
                   Row(children: [
-                    Expanded(child: TextField(controller: capacity, decoration: const InputDecoration(labelText: 'Capacity'), keyboardType: TextInputType.number)),
+                    Expanded(
+                      child: TextField(
+                        controller: capacity,
+                        decoration: InputDecoration(
+                          labelText: 'Capacity',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
                     const SizedBox(width: 8),
-                    Expanded(child: TextField(controller: available, decoration: const InputDecoration(labelText: 'Available'), keyboardType: TextInputType.number)),
+                    Expanded(
+                      child: TextField(
+                        controller: available,
+                        decoration: InputDecoration(
+                          labelText: 'Available',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
                   ]),
                   const SizedBox(height: 8),
-                  TextField(controller: rate, decoration: const InputDecoration(labelText: 'Hourly Rate (KES)'), keyboardType: TextInputType.number),
+                  TextField(
+                    controller: rate,
+                    decoration: InputDecoration(
+                      labelText: 'Hourly Rate (KES)',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      prefixIcon: Icon(Icons.attach_money, color: AppTheme.primaryYellow),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      style: AppTheme.primaryButtonStyle,
                       onPressed: () async {
                         final updated = s.copyWith(
                           title: title.text.trim(),
@@ -249,23 +326,45 @@ class _BookingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Bookings • ${space.title}')),
+      backgroundColor: AppTheme.primaryDark,
+      appBar: AppBar(
+        title: Text('Bookings • ${space.title}'),
+        backgroundColor: AppTheme.darkBackground,
+        foregroundColor: AppTheme.textLight,
+      ),
       body: StreamBuilder(
         stream: _service.bookingsForSpace(space.id),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+          if (!snapshot.hasData) return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryYellow),
+            ),
+          );
           final bookings = snapshot.data!;
-          if (bookings.isEmpty) return const Center(child: Text('No bookings yet'));
+          if (bookings.isEmpty) return Center(
+            child: Text(
+              'No bookings yet',
+              style: TextStyle(color: AppTheme.textLight),
+            ),
+          );
           return ListView.builder(
             itemCount: bookings.length,
             itemBuilder: (context, i) {
               final b = bookings[i];
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                color: AppTheme.darkBackground,
                 child: ListTile(
-                  title: Text('${b.startTime} → ${b.endTime}'),
-                  subtitle: Text('Status: ${b.status.name} • KES ${b.totalAmount.toStringAsFixed(0)}'),
+                  title: Text(
+                    '${b.startTime} → ${b.endTime}',
+                    style: TextStyle(color: AppTheme.textLight, fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    'Status: ${b.status.name} • KES ${b.totalAmount.toStringAsFixed(0)}',
+                    style: TextStyle(color: AppTheme.textGrey),
+                  ),
                   trailing: PopupMenuButton<String>(
+                    icon: Icon(Icons.more_vert, color: AppTheme.textLight),
                     onSelected: (v) async {
                       if (v == 'cancel') {
                         final reason = await _promptReason(context);

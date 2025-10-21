@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import '../constant.dart';
+import '../utils/app_theme.dart';
 import 'BookingSuccessful.dart';
 
 class MyBooking extends StatefulWidget {
@@ -15,20 +15,20 @@ class _MyBookingState extends State<MyBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kprimaryBgColor,
+      backgroundColor: AppTheme.primaryDark,
       appBar: AppBar(
-        backgroundColor: kprimaryColor,
+        backgroundColor: AppTheme.darkBackground,
         elevation: 0,
         centerTitle: true,
         title: Text(
           'My Bookings',
           style: TextStyle(
-            color: kBtnTextColor,
+            color: AppTheme.textLight,
             fontWeight: FontWeight.w600,
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: kBtnTextColor),
+          icon: Icon(Icons.arrow_back, color: AppTheme.textLight),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -39,14 +39,7 @@ class _MyBookingState extends State<MyBooking> {
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
+                color: AppTheme.darkBackground,
               ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -66,17 +59,17 @@ class _MyBookingState extends State<MyBooking> {
             
             // Bookings List
             Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('reservations')
-                    .where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                    .orderBy('date', descending: true)
-                    .snapshots(),
+              child: StreamBuilder<DatabaseEvent>(
+                stream: FirebaseDatabase.instance
+                    .ref('reservations')
+                    .orderByChild('uid')
+                    .equalTo(FirebaseAuth.instance.currentUser!.uid)
+                    .onValue,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(kprimaryColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryYellow),
                       ),
                     );
                   }
@@ -97,7 +90,7 @@ class _MyBookingState extends State<MyBooking> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: ksecondaryColor,
+                              color: AppTheme.textLight,
                             ),
                           ),
                           SizedBox(height: 8),
@@ -105,7 +98,7 @@ class _MyBookingState extends State<MyBooking> {
                             'Please try again later',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[600],
+                              color: AppTheme.textGrey,
                             ),
                           ),
                         ],
@@ -113,7 +106,7 @@ class _MyBookingState extends State<MyBooking> {
                     );
                   }
                   
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -121,7 +114,7 @@ class _MyBookingState extends State<MyBooking> {
                           Icon(
                             Icons.local_parking_outlined,
                             size: 80,
-                            color: Colors.grey[400],
+                            color: AppTheme.textGrey,
                           ),
                           SizedBox(height: 16),
                           Text(
@@ -129,7 +122,7 @@ class _MyBookingState extends State<MyBooking> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
-                              color: ksecondaryColor,
+                              color: AppTheme.textLight,
                             ),
                           ),
                           SizedBox(height: 8),
@@ -137,7 +130,7 @@ class _MyBookingState extends State<MyBooking> {
                             'Your parking reservations will appear here',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[600],
+                              color: AppTheme.textGrey,
                             ),
                           ),
                         ],
@@ -145,9 +138,23 @@ class _MyBookingState extends State<MyBooking> {
                     );
                   }
                   
-                  final filteredDocs = _filterBookings(snapshot.data!.docs);
+                  final bookingsMap = snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
+                  final bookingsList = bookingsMap.entries.map((e) {
+                    final data = Map<String, dynamic>.from(e.value as Map);
+                    data['id'] = e.key;
+                    return data;
+                  }).toList();
                   
-                  if (filteredDocs.isEmpty) {
+                  // Sort by date
+                  bookingsList.sort((a, b) {
+                    final dateA = a['date'] ?? '';
+                    final dateB = b['date'] ?? '';
+                    return dateB.compareTo(dateA);
+                  });
+                  
+                  final filteredBookings = _filterBookings(bookingsList);
+                  
+                  if (filteredBookings.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +162,7 @@ class _MyBookingState extends State<MyBooking> {
                           Icon(
                             Icons.filter_list_off,
                             size: 64,
-                            color: Colors.grey[400],
+                            color: AppTheme.textGrey,
                           ),
                           SizedBox(height: 16),
                           Text(
@@ -163,7 +170,7 @@ class _MyBookingState extends State<MyBooking> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: ksecondaryColor,
+                              color: AppTheme.textLight,
                             ),
                           ),
                         ],
@@ -173,14 +180,10 @@ class _MyBookingState extends State<MyBooking> {
                   
                   return ListView.builder(
                     padding: EdgeInsets.all(16),
-                    itemCount: filteredDocs.length,
+                    itemCount: filteredBookings.length,
                     itemBuilder: (context, index) {
-                      final document = filteredDocs[index];
-                      final data = document.data() as Map<String, dynamic>?;
-                      
-                      if (data == null) return SizedBox();
-                      
-                      return _buildBookingCard(document, data);
+                      final data = filteredBookings[index];
+                      return _buildBookingCard(data);
                     },
                   );
                 },
@@ -203,16 +206,16 @@ class _MyBookingState extends State<MyBooking> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? kprimaryColor : Colors.grey[200],
+          color: isSelected ? AppTheme.primaryYellow : AppTheme.primaryDark,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? kprimaryColor : Colors.grey[300]!,
+            color: isSelected ? AppTheme.primaryYellow : AppTheme.textGrey,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey[700],
+            color: isSelected ? AppTheme.textDark : AppTheme.textLight,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             fontSize: 14,
           ),
@@ -221,19 +224,16 @@ class _MyBookingState extends State<MyBooking> {
     );
   }
   
-  List<DocumentSnapshot> _filterBookings(List<DocumentSnapshot> docs) {
-    if (_selectedFilter == 'all') return docs;
+  List<Map<String, dynamic>> _filterBookings(List<Map<String, dynamic>> bookings) {
+    if (_selectedFilter == 'all') return bookings;
     
-    return docs.where((doc) {
-      final data = doc.data() as Map<String, dynamic>?;
-      if (data == null) return false;
-      
+    return bookings.where((data) {
       final status = data['status'] ?? 'upcoming';
       return status == _selectedFilter;
     }).toList();
   }
   
-  Widget _buildBookingCard(DocumentSnapshot document, Map<String, dynamic> data) {
+  Widget _buildBookingCard(Map<String, dynamic> data) {
     final status = data['status'] ?? 'upcoming';
     final statusColor = _getStatusColor(status);
     final statusIcon = _getStatusIcon(status);
@@ -252,7 +252,7 @@ class _MyBookingState extends State<MyBooking> {
               builder: (_) => BookingSuccessful(
                 spot: data,
                 data: {
-                  'ticketID': document.id,
+                  'ticketID': data['id'] ?? '',
                   'centre': data['centre'] ?? '',
                   'date': data['date'] ?? '',
                   'checkin': data['checkin'] ?? '',
@@ -281,7 +281,7 @@ class _MyBookingState extends State<MyBooking> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: ksecondaryColor,
+                            color: AppTheme.textDark,
                           ),
                         ),
                         SizedBox(height: 4),
@@ -363,7 +363,7 @@ class _MyBookingState extends State<MyBooking> {
                     child: _buildInfoItem(
                       Icons.confirmation_number,
                       'Ticket ID',
-                      document.id.substring(0, 8) + '...',
+                      (data['id'] ?? '').toString().substring(0, 8) + '...',
                     ),
                   ),
                 ],
@@ -378,7 +378,7 @@ class _MyBookingState extends State<MyBooking> {
                     'Tap for details',
                     style: TextStyle(
                       fontSize: 12,
-                      color: kprimaryColor,
+                      color: AppTheme.primaryYellow,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -386,7 +386,7 @@ class _MyBookingState extends State<MyBooking> {
                   Icon(
                     Icons.arrow_forward_ios,
                     size: 14,
-                    color: kprimaryColor,
+                    color: AppTheme.primaryYellow,
                   ),
                 ],
               ),
@@ -403,7 +403,7 @@ class _MyBookingState extends State<MyBooking> {
         Icon(
           icon,
           size: 16,
-          color: kprimaryColor,
+          color: AppTheme.primaryYellow,
         ),
         SizedBox(width: 6),
         Expanded(
@@ -422,7 +422,7 @@ class _MyBookingState extends State<MyBooking> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: ksecondaryColor,
+                  color: AppTheme.textDark,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

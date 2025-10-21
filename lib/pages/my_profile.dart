@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:parkme/Authentication/signIn.dart';
 import 'package:parkme/UserDashboard/ChangePassword.dart';
 import 'package:parkme/Booking/mybooking.dart';
-import 'package:parkme/constant.dart';
 import 'package:parkme/pages/faq.dart';
+import '../utils/app_theme.dart';
 
 class MyProfile extends StatefulWidget {
   final User? user;
@@ -17,132 +17,148 @@ class _MyProfileState extends State<MyProfile> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+    final displayName = widget.user?.displayName ?? 'User';
+    final email = widget.user?.email ?? 'No email';
+    
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: AppTheme.primaryDark,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // Profile Header
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 250,
+                padding: EdgeInsets.symmetric(vertical: 40),
                 decoration: BoxDecoration(
-                    color: Colors.white70,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20))),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.primaryDark,
+                      AppTheme.darkBackground,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Profile(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: Text(
-                        widget.user!.displayName as String,
-                        style: TextStyle(
-                          wordSpacing: 2,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: kprimaryColor,
-                        ),
+                    SizedBox(height: 16),
+                    Text(
+                      displayName,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textLight,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Text(
-                        widget.user!.email as String,
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black45,
-                        ),
+                    SizedBox(height: 8),
+                    Text(
+                      email,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.textGrey,
                       ),
                     ),
                   ],
                 ),
               ),
+              SizedBox(height: 24),
+              
+              // Account Settings
               Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: Text('Account Settings'),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        child: ProfileOptions(
-                            icon: Icons.settings,
-                            Option_title: 'Change Password'),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return ChangePassword(
-                                  user: _auth.currentUser as User,
-                                );
-                              },
-                            ),
-                          );
-                        },
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Account Settings',
+                      style: TextStyle(
+                        color: AppTheme.textGrey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
-                     GestureDetector(
-                       child:  ProfileOptions(
-                          icon: Icons.question_answer,
-                          Option_title: 'Frequently Asked Questions'),
-                              onTap: () {
+                    ),
+                    SizedBox(height: 16),
+                    _buildMenuCard(
+                      icon: Icons.book_outlined,
+                      title: 'My Bookings',
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => MyBooking()),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 12),
+                    _buildMenuCard(
+                      icon: Icons.lock_outline,
+                      title: 'Change Password',
+                      onTap: () {
+                        if (_auth.currentUser != null) {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) {
-                                return FAQPage();
-                              },
+                              builder: (_) => ChangePassword(
+                                user: _auth.currentUser!,
+                              ),
                             ),
                           );
-                        },
-                     ),
-                      GestureDetector(
-                        child: ProfileOptions(
-                            icon: Icons.store, Option_title: 'My Bookings'),
-                                 onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return MyBooking();
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                        }
+                      },
+                    ),
+                    SizedBox(height: 12),
+                    _buildMenuCard(
+                      icon: Icons.help_outline,
+                      title: 'FAQ',
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => FAQPage()),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
+              SizedBox(height: 32),
+              
+              // Sign Out Button
               Padding(
-                // sign out logic
-                padding: const EdgeInsets.only(top: 30, bottom: 20),
-                child: GestureDetector(
-                  onTap: () {
-                    _signOut().whenComplete(() {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => SignIn()));
-                    });
-                  },
-                  child: Text(
-                    'Sign out',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: kprimaryColor,
-                      fontSize: 20,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      _signOut().whenComplete(() {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => SignIn()),
+                        );
+                      });
+                    },
+                    icon: Icon(Icons.logout),
+                    label: Text('Sign Out'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: BorderSide(color: Colors.red),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
               ),
-              Text('ParkMe v1.0.0')
+              
+              SizedBox(height: 24),
+              
+              Text(
+                'ParkMe v1.0.0',
+                style: TextStyle(
+                  color: AppTheme.textGrey,
+                  fontSize: 12,
+                ),
+              ),
+              
+              SizedBox(height: 40),
             ],
           ),
         ),
@@ -154,49 +170,98 @@ class _MyProfileState extends State<MyProfile> {
     await _auth.signOut();
   }
 
-  Profile() {
+  Widget Profile() {
     if (widget.user?.photoURL != null) {
-      String photoUrl = widget.user!.photoURL!.replaceFirst("s96", "s400"); //
-      print(photoUrl);
-      return CircleAvatar(
-        radius: 65,
-        backgroundImage: NetworkImage(photoUrl),
+      String photoUrl = widget.user!.photoURL!.replaceFirst("s96", "s400");
+      return Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppTheme.primaryYellow, width: 3),
+          image: DecorationImage(
+            image: NetworkImage(photoUrl),
+            fit: BoxFit.cover,
+          ),
+        ),
       );
     }
+    
+    final displayName = widget.user?.displayName ?? 'User';
+    final initial = displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U';
+    
     return Container(
-      width: 130,
-      height: 130,
+      width: 100,
+      height: 100,
       decoration: BoxDecoration(
-          color: kprimaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(100))),
+        color: AppTheme.primaryYellow,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppTheme.primaryYellow.withOpacity(0.3), width: 3),
+      ),
       child: Center(
-          child: Text(
-        widget.user!.displayName![0],
-        style: TextStyle(
-          fontSize: 60,
-          fontWeight: FontWeight.w500,
-          color: Colors.white,
+        child: Text(
+          initial,
+          style: TextStyle(
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textDark,
+          ),
         ),
-      )),
+      ),
+    );
+  }
+  
+  Widget _buildMenuCard({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.darkBackground,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppTheme.textGrey.withOpacity(0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryYellow.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: AppTheme.primaryYellow,
+                size: 24,
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: AppTheme.textLight,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppTheme.textGrey,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class ProfileOptions extends StatelessWidget {
-  const ProfileOptions({
-    Key? key,
-    required this.icon,
-    required this.Option_title,
-  }) : super(key: key);
-
-  final IconData icon;
-  final String Option_title;
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(Option_title),
-      trailing: Icon(Icons.keyboard_arrow_right),
-    );
-  }
-}

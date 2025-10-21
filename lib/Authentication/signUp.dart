@@ -7,6 +7,7 @@ import 'package:parkme/constant.dart';
 import 'package:parkme/net/firebase.dart';
 import 'package:parkme/net/database.dart';
 import 'package:parkme/owner/owner_dashboard.dart';
+import '../utils/app_theme.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -33,235 +34,154 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kprimaryBgColor,
+      backgroundColor: AppTheme.primaryDark,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.only(left: 16, right: 16),
+            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 50,
+                // Logo
+                Center(child: AppTheme.logo(size: 80)),
+                
+                SizedBox(height: 16),
+                
+                // Title
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'PARK',
+                          style: AppTheme.headingStyle.copyWith(fontSize: 28),
+                        ),
+                        TextSpan(
+                          text: 'ING',
+                          style: AppTheme.headingStyle.copyWith(
+                            fontSize: 28,
+                            color: AppTheme.primaryYellow,
+                          ),
+                        ),
+                      ],
                     ),
-                    Center(
-                      child: Image.asset("assets/images/parkmeLogo.png"),
+                  ),
+                ),
+                
+                SizedBox(height: 8),
+                
+                Center(
+                  child: Text(
+                    "Create your account",
+                    style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
+                  ),
+                ),
+                
+                SizedBox(height: 40),
+                // Name field
+                _buildTextField(
+                  controller: _displayName,
+                  label: "Full Name",
+                ),
+                
+                SizedBox(height: 20),
+                
+                // Email field
+                _buildTextField(
+                  controller: _emailController,
+                  label: "Email Address",
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                
+                SizedBox(height: 20),
+                
+                // Password field
+                _buildTextField(
+                  controller: _passwordController,
+                  label: "Password",
+                  obscureText: !_showPassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _showPassword ? Icons.visibility_off : Icons.visibility,
+                      color: AppTheme.textGrey,
                     ),
-                    SizedBox(
-                      height: 50,
+                    onPressed: () {
+                      setState(() => _showPassword = !_showPassword);
+                    },
+                  ),
+                ),
+                
+                SizedBox(height: 24),
+                // User Type Selection
+                Text(
+                  "Account Type",
+                  style: AppTheme.labelStyle,
+                ),
+                SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildUserTypeCard(
+                        type: 'user',
+                        icon: Icons.directions_car,
+                        title: 'User',
+                      ),
                     ),
-                    Center(
-                        child: Text(
-                      "Create Account",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )),
-                    SizedBox(
-                      height: 6,
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: _buildUserTypeCard(
+                        type: 'owner',
+                        icon: Icons.local_parking,
+                        title: 'Owner',
+                      ),
                     ),
-                    Center(
-                        child: Text(
-                      "Please fill following details to get started!",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    )),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: _buildUserTypeCard(
+                        type: 'kanjo',
+                        icon: Icons.security,
+                        title: 'Kanjo',
+                      ),
+                    ),
                   ],
                 ),
+                
+                SizedBox(height: 32),
+                
+                // Sign up button
                 SizedBox(
-                  height: 50,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _registerAccount,
+                    style: AppTheme.primaryButtonStyle,
+                    child: Text('SIGN UP', style: AppTheme.buttonTextStyle),
+                  ),
                 ),
-                Column(
+                
+                SizedBox(height: 24),
+                
+                // Sign in link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    TextField(
-                      controller: _displayName,
-                      decoration: InputDecoration(
-                        labelText: "Name",
-                        labelStyle: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade400,
-                            fontWeight: FontWeight.w600),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                    Text(
+                      "Already have an account? ",
+                      style: TextStyle(color: AppTheme.textLight, fontSize: 14),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignIn()),
+                        );
+                      },
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryYellow,
+                          fontSize: 14,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: kprimaryColor),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: "Email ID",
-                        labelStyle: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade400,
-                            fontWeight: FontWeight.w600),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: kprimaryColor),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: !_showPassword,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            this._showPassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: Colors.grey.shade400,
-                          ),
-                          onPressed: () {
-                            setState(
-                                () => this._showPassword = !this._showPassword);
-                          },
-                        ),
-                        labelText: "Password",
-                        labelStyle: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade400,
-                            fontWeight: FontWeight.w600),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: kprimaryColor),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    // User Type Selection
-                    Container(
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "I am a:",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildUserTypeCard(
-                                  type: 'user',
-                                  icon: Icons.directions_car,
-                                  title: 'Car Owner',
-                                  subtitle: 'Find parking',
-                                ),
-                              ),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: _buildUserTypeCard(
-                                  type: 'owner',
-                                  icon: Icons.local_parking,
-                                  title: 'Parking Owner',
-                                  subtitle: 'List your space',
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 12),
-                          _buildUserTypeCard(
-                            type: 'kanjo',
-                            icon: Icons.security,
-                            title: 'Kanjo Officer',
-                            subtitle: 'Enforcement & Compliance',
-                            fullWidth: true,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Container(
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          _registerAccount();
-                        },
-                      
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            color: kprimaryColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Container(
-                            alignment: Alignment.center,
-                            constraints: BoxConstraints(
-                                minHeight: 50, maxWidth: double.infinity),
-                            child: Text(
-                              "SIGN UP",
-                              style:
-                                  TextStyle(color: kBtnTextColor, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "Already have an account? ",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignIn()),
-                              );
-                            },
-                            child: Text(
-                              "SIGN IN",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: kprimaryColor),
-                            ),
-                          )
-                        ],
                       ),
                     )
                   ],
@@ -274,12 +194,35 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+    Widget? suffixIcon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: AppTheme.labelStyle),
+        SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          style: AppTheme.inputStyle,
+          decoration: AppTheme.inputDecoration(label).copyWith(
+            suffixIcon: suffixIcon,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildUserTypeCard({
     required String type,
     required IconData icon,
     required String title,
-    required String subtitle,
-    bool fullWidth = false,
   }) {
     final isSelected = _selectedUserType == type;
     return InkWell(
@@ -289,79 +232,35 @@ class _SignUpState extends State<SignUp> {
         });
       },
       child: Container(
-        padding: EdgeInsets.all(fullWidth ? 12 : 16),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
-              ? kprimaryColor.withOpacity(0.1)
-              : Colors.grey.shade50,
+              ? AppTheme.primaryYellow.withOpacity(0.2)
+              : AppTheme.darkBackground,
           border: Border.all(
-            color: isSelected ? kprimaryColor : Colors.grey.shade300,
+            color: isSelected ? AppTheme.primaryYellow : AppTheme.textGrey,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: fullWidth
-            ? Row(
-                children: [
-                  Icon(
-                    icon,
-                    size: 32,
-                    color: isSelected ? kprimaryColor : Colors.grey.shade600,
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: isSelected
-                                ? kprimaryColor
-                                : Colors.grey.shade700,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          subtitle,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : Column(
-                children: [
-                  Icon(
-                    icon,
-                    size: 40,
-                    color: isSelected ? kprimaryColor : Colors.grey.shade600,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected ? kprimaryColor : Colors.grey.shade700,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 32,
+              color: isSelected ? AppTheme.primaryYellow : AppTheme.textLight,
+            ),
+            SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? AppTheme.primaryYellow : AppTheme.textLight,
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
