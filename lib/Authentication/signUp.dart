@@ -21,7 +21,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isSuccess=false;
-  String _selectedUserType = 'user'; // 'user', 'owner', or 'kanjo'
+  String _selectedUserType = 'user'; // 'user' or 'owner'
   
   @override
   void dispose() {
@@ -133,14 +133,6 @@ class _SignUpState extends State<SignUp> {
                         type: 'owner',
                         icon: Icons.local_parking,
                         title: 'Owner',
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: _buildUserTypeCard(
-                        type: 'kanjo',
-                        icon: Icons.security,
-                        title: 'Kanjo',
                       ),
                     ),
                   ],
@@ -288,25 +280,9 @@ class _SignUpState extends State<SignUp> {
 
       // Navigate based on user type
       if (mounted) {
-        Widget destination;
-        switch (_selectedUserType) {
-          case 'owner':
-            destination = OwnerDashboardPage();
-            break;
-          case 'kanjo':
-            // Kanjo officers need additional profile setup
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Kanjo officer account created. Please complete your profile.'),
-                backgroundColor: Colors.orange,
-                duration: Duration(seconds: 3),
-              ),
-            );
-            destination = Dashboard(user: user1 as User); // Temporary - will redirect to kanjo dashboard
-            break;
-          default:
-            destination = Dashboard(user: user1 as User);
-        }
+        Widget destination = _selectedUserType == 'owner'
+            ? OwnerDashboardPage()
+            : Dashboard(user: user1 as User);
 
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => destination),

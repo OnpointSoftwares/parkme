@@ -21,7 +21,6 @@
                     <li class="nav-item"><a class="nav-link" href="#overview">Overview</a></li>
                     <li class="nav-item"><a class="nav-link" href="#user-guide">User Guide</a></li>
                     <li class="nav-item"><a class="nav-link" href="#owner-guide">Owner Guide</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#kanjo-guide">Kanjo Guide</a></li>
                     <li class="nav-item"><a class="nav-link" href="#admin-guide">Admin Guide</a></li>
                 </ul>
             </div>
@@ -42,36 +41,33 @@
             <h2 class="section-title"><i class="bi bi-info-circle"></i> Overview</h2>
             <div class="card">
                 <div class="card-body">
-                    <p class="lead">ParkMe is a comprehensive parking management system with four user roles:</p>
+                    <p class="lead">ParkMe is a comprehensive parking management system with three user roles:</p>
                     <div class="row mt-4">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="role-card text-center p-3">
                                 <i class="bi bi-person-circle display-4 text-primary"></i>
                                 <h5 class="mt-2">Regular User</h5>
                                 <p class="small">Find and book parking</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="role-card text-center p-3">
                                 <i class="bi bi-building display-4 text-success"></i>
                                 <h5 class="mt-2">Parking Owner</h5>
                                 <p class="small">Manage spots & bookings</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="role-card text-center p-3">
-                                <i class="bi bi-shield-check display-4 text-warning"></i>
-                                <h5 class="mt-2">Kanjo Officer</h5>
-                                <p class="small">Enforce parking rules</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="role-card text-center p-3">
                                 <i class="bi bi-gear-fill display-4 text-danger"></i>
                                 <h5 class="mt-2">Admin</h5>
                                 <p class="small">System management</p>
                             </div>
                         </div>
+                    </div>
+                    <div class="alert alert-success mt-4">
+                        <h5><i class="bi bi-palette"></i> Modern UI Design</h5>
+                        <p class="mb-0">All dashboards feature a sleek dark theme with yellow accents, improved navigation, and enhanced user experience across all platforms.</p>
                     </div>
                 </div>
             </div>
@@ -176,19 +172,21 @@
                         <div class="accordion-body">
                             <h5>View Your Bookings</h5>
                             <ol>
-                                <li>Navigate to <strong>"My Bookings"</strong></li>
-                                <li>Filter by: All, Today, Upcoming, Completed</li>
+                                <li>Navigate to <strong>"My Bookings"</strong> from profile menu</li>
+                                <li>Filter by: All, Upcoming, Completed, Cancelled</li>
                                 <li>Tap any booking to view details</li>
                                 <li>View QR code for check-in</li>
                             </ol>
                             <h5 class="mt-3">Booking Status</h5>
                             <ul class="list-unstyled">
-                                <li><span class="badge bg-warning">Pending</span> - Awaiting confirmation</li>
-                                <li><span class="badge bg-info">Confirmed</span> - Ready for check-in</li>
-                                <li><span class="badge bg-primary">Checked In</span> - Currently parked</li>
+                                <li><span class="badge bg-info">Upcoming</span> - Scheduled for future</li>
+                                <li><span class="badge bg-primary">Active</span> - Currently parked</li>
                                 <li><span class="badge bg-success">Completed</span> - Finished</li>
-                                <li><span class="badge bg-danger">Canceled</span> - Canceled by owner</li>
+                                <li><span class="badge bg-danger">Cancelled</span> - Canceled by owner</li>
                             </ul>
+                            <div class="alert alert-info mt-3">
+                                <i class="bi bi-palette"></i> <strong>New Design:</strong> Modern dark theme with yellow accents for better visibility
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -296,7 +294,7 @@
                     </h2>
                     <div id="owner4" class="accordion-collapse collapse" data-bs-parent="#ownerAccordion">
                         <div class="accordion-body">
-                            <h5>View Performance Metrics</h5>
+                            <h5 class="mt-3">View Performance Metrics</h5>
                             <ol>
                                 <li>Toggle <strong>Statistics</strong> icon in "My Spots"</li>
                                 <li>View:
@@ -310,6 +308,9 @@
                                     </ul>
                                 </li>
                             </ol>
+                            <div class="alert alert-success mt-3">
+                                <i class="bi bi-palette"></i> <strong>Enhanced UI:</strong> Dark theme with yellow accents, modern cards, and improved navigation
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -458,6 +459,9 @@
                                 <li>Click menu → <strong>"View Bookings"</strong></li>
                                 <li>Cancel bookings with reason if needed</li>
                             </ol>
+                            <div class="alert alert-success mt-3">
+                                <i class="bi bi-palette"></i> <strong>Modern Interface:</strong> Dark theme with yellow accents, enhanced forms with rounded borders, and improved map picker
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -482,6 +486,276 @@
                                     </ul>
                                 </li>
                             </ol>
+                            <div class="alert alert-info mt-3">
+                                <i class="bi bi-phone"></i> <strong>Field Officers:</strong> Use USSD code <strong>*384*55555#</strong> for payment verification without a smartphone
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- USSD Guide -->
+        <section id="ussd-guide" class="mb-5">
+            <h2 class="section-title"><i class="bi bi-phone"></i> USSD Field Officer Guide</h2>
+            
+            <div class="accordion" id="ussdAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ussd1">
+                            <i class="bi bi-info-circle me-2"></i> What is USSD Payment Verification?
+                        </button>
+                    </h2>
+                    <div id="ussd1" class="accordion-collapse collapse show" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>Overview</h5>
+                            <p>The USSD system allows field parking officers to verify customer payments using basic mobile phones - no smartphone or internet connection required!</p>
+                            <div class="alert alert-info">
+                                <i class="bi bi-lightbulb"></i> <strong>Key Benefits:</strong>
+                                <ul class="mb-0">
+                                    <li>Works on any mobile phone (feature phones included)</li>
+                                    <li>No internet connection needed</li>
+                                    <li>Instant payment verification</li>
+                                    <li>Record violations on the spot</li>
+                                    <li>Track daily performance</li>
+                                </ul>
+                            </div>
+                            <h5 class="mt-3">USSD Code</h5>
+                            <p class="lead"><strong>*384*55555#</strong></p>
+                            <p class="small text-muted">Dial this code from your registered officer phone number</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ussd2">
+                            <i class="bi bi-search me-2"></i> Checking Payment Status
+                        </button>
+                    </h2>
+                    <div id="ussd2" class="accordion-collapse collapse" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>Verify if a Vehicle Has Paid</h5>
+                            <ol>
+                                <li>Dial <strong>*384*55555#</strong></li>
+                                <li>Select <strong>1. Check Payment Status</strong></li>
+                                <li>Enter vehicle registration number (e.g., <code>KAA 123A</code>)</li>
+                                <li>View instant results</li>
+                            </ol>
+                            
+                            <h5 class="mt-3">Payment Status Results</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card border-success mb-3">
+                                        <div class="card-header bg-success text-white">
+                                            <i class="bi bi-check-circle"></i> PAID
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="small mb-1"><strong>Shows:</strong></p>
+                                            <ul class="small">
+                                                <li>Vehicle number</li>
+                                                <li>Parking location</li>
+                                                <li>Date & time slot</li>
+                                                <li>Amount paid (KES)</li>
+                                                <li>Transaction ID</li>
+                                            </ul>
+                                            <p class="text-success mb-0"><strong>Action:</strong> Allow parking</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card border-danger mb-3">
+                                        <div class="card-header bg-danger text-white">
+                                            <i class="bi bi-x-circle"></i> NOT PAID / NO BOOKING
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="small mb-1"><strong>Shows:</strong></p>
+                                            <ul class="small">
+                                                <li>Vehicle number</li>
+                                                <li>No booking found message</li>
+                                            </ul>
+                                            <p class="text-danger mb-0"><strong>Action:</strong> Request payment or issue violation</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> <strong>Important:</strong> Always verify the vehicle number matches the physical license plate
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ussd3">
+                            <i class="bi bi-calendar-day me-2"></i> Viewing Today's Bookings
+                        </button>
+                    </h2>
+                    <div id="ussd3" class="accordion-collapse collapse" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>See All Active Bookings</h5>
+                            <ol>
+                                <li>Dial <strong>*384*55555#</strong></li>
+                                <li>Select <strong>2. View Today's Bookings</strong></li>
+                                <li>View list of active bookings with:
+                                    <ul>
+                                        <li>✓ Paid bookings</li>
+                                        <li>✗ Unpaid bookings</li>
+                                        <li>Vehicle numbers</li>
+                                        <li>Locations</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <p class="small text-muted">Shows up to 5 most recent bookings</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ussd4">
+                            <i class="bi bi-exclamation-octagon me-2"></i> Reporting Violations
+                        </button>
+                    </h2>
+                    <div id="ussd4" class="accordion-collapse collapse" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>Record Illegal Parking</h5>
+                            <ol>
+                                <li>Dial <strong>*384*55555#</strong></li>
+                                <li>Select <strong>3. Report Issue</strong></li>
+                                <li>Select <strong>1. Illegal Parking</strong></li>
+                                <li>Enter vehicle registration number</li>
+                                <li>Receive confirmation with:
+                                    <ul>
+                                        <li>Violation ID</li>
+                                        <li>Vehicle number</li>
+                                        <li>Penalty amount (KES 2,000)</li>
+                                        <li>Officer phone number</li>
+                                    </ul>
+                                </li>
+                            </ol>
+
+                            <h5 class="mt-3">Other Issue Types</h5>
+                            <ul>
+                                <li><strong>Payment Dispute</strong> - Customer claims payment not reflecting</li>
+                                <li><strong>System Error</strong> - Technical problems with the system</li>
+                                <li><strong>Other</strong> - General issues</li>
+                            </ul>
+
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> All violations sync automatically with the Kanjo dashboard in the app
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ussd5">
+                            <i class="bi bi-graph-up-arrow me-2"></i> Officer Statistics
+                        </button>
+                    </h2>
+                    <div id="ussd5" class="accordion-collapse collapse" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>View Your Daily Performance</h5>
+                            <ol>
+                                <li>Dial <strong>*384*55555#</strong></li>
+                                <li>Select <strong>4. My Stats</strong></li>
+                                <li>View today's metrics:
+                                    <ul>
+                                        <li><strong>Checks</strong> - Number of payment verifications</li>
+                                        <li><strong>Violations</strong> - Violations recorded</li>
+                                        <li><strong>Reports</strong> - Issues reported</li>
+                                        <li><strong>Active Bookings</strong> - Total bookings today</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ussd6">
+                            <i class="bi bi-list-check me-2"></i> USSD Menu Structure
+                        </button>
+                    </h2>
+                    <div id="ussd6" class="accordion-collapse collapse" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>Complete Menu Map</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <pre class="mb-0" style="font-size: 0.85rem;">
+<strong>*384*55555#</strong>
+│
+├── <strong>1. Check Payment Status</strong>
+│   └── Enter Vehicle Number → Shows payment details
+│
+├── <strong>2. View Today's Bookings</strong>
+│   └── Lists all active bookings with status
+│
+├── <strong>3. Report Issue</strong>
+│   ├── 1. Illegal Parking → Enter vehicle number
+│   ├── 2. Payment Dispute → Enter details
+│   ├── 3. System Error → Enter details
+│   └── 4. Other → Enter details
+│
+└── <strong>4. My Stats</strong>
+    └── Shows daily performance metrics
+                                    </pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ussd7">
+                            <i class="bi bi-question-circle me-2"></i> Troubleshooting
+                        </button>
+                    </h2>
+                    <div id="ussd7" class="accordion-collapse collapse" data-bs-parent="#ussdAccordion">
+                        <div class="accordion-body">
+                            <h5>Common Issues & Solutions</h5>
+                            
+                            <div class="card mb-3">
+                                <div class="card-header"><strong>Issue:</strong> "System error. Please try again later."</div>
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>Solutions:</strong></p>
+                                    <ul class="mb-0">
+                                        <li>Check your phone has network signal</li>
+                                        <li>Wait a few seconds and try again</li>
+                                        <li>Ensure you're using a registered officer phone number</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header"><strong>Issue:</strong> No bookings found for valid vehicle</div>
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>Solutions:</strong></p>
+                                    <ul class="mb-0">
+                                        <li>Verify vehicle number is entered correctly (no spaces)</li>
+                                        <li>Check if booking is for today's date</li>
+                                        <li>Customer may not have completed payment</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header"><strong>Issue:</strong> USSD session timeout</div>
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>Solutions:</strong></p>
+                                    <ul class="mb-0">
+                                        <li>Complete actions quickly (within 3 minutes)</li>
+                                        <li>Dial the code again to start fresh</li>
+                                        <li>Have vehicle numbers ready before dialing</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

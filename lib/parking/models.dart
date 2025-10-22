@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 class ParkingSpace {
   final String id;
-  final String ownerId; // user id (owner or kanjo when managed by county)
+  final String ownerId; // user id of the parking space owner
   final String title;
   final String description;
   final String location; // human readable

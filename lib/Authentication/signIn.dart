@@ -8,7 +8,6 @@ import 'package:parkme/Authentication/signUp.dart';
 import 'package:parkme/constant.dart';
 import 'package:parkme/UserDashboard/dashboard.dart';
 import 'package:parkme/admin/admin_dashboard.dart';
-import 'package:parkme/kanjo/screens/kanjo_dashboard.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'ResetPassword.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -167,9 +166,6 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
           break;
         case 'owner':
           destination = const OwnerDashboard();
-          break;
-        case 'kanjo':
-          destination = const KanjoDashboard();
           break;
         default:
           destination = Dashboard(user: user);

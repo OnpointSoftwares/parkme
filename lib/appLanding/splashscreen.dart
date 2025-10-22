@@ -5,7 +5,6 @@ import 'landingScreen.dart';
 import 'package:parkme/UserDashboard/dashboard.dart';
 import 'package:parkme/admin/admin_dashboard.dart';
 import 'package:parkme/owner/owner_dashboard_main.dart';
-import 'package:parkme/kanjo/screens/kanjo_dashboard.dart';
 import '../utils/app_theme.dart';
 
 class Splash extends StatefulWidget {
@@ -43,9 +42,6 @@ class _SplashState extends State<Splash> {
             break;
           case 'owner':
             destination = const OwnerDashboard();
-            break;
-          case 'kanjo':
-            destination = const KanjoDashboard();
             break;
           default:
             destination = Dashboard(user: user);
